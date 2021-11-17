@@ -20,6 +20,7 @@ func OnReady() {
 	systray.AddSeparator()
 	mGoogleBrowser := systray.AddMenuItem("Google in Browser", "Opens Google in a normal browser")
 	mGoogleEmbed := systray.AddMenuItem("Google in Window", "Opens Google in a custom window")
+	mSettings := systray.AddMenuItem("Settings in Window", "Opens Google in a custom window")
 	systray.AddSeparator()
 	mQuit := systray.AddMenuItem("Quit", "Quit example tray application")
 
@@ -41,6 +42,11 @@ func OnReady() {
 			}
 		case <-mGoogleEmbed.ClickedCh:
 			err := views.Get().OpenGoogle()
+			if err != nil {
+				fmt.Println(err)
+			}
+		case <-mSettings.ClickedCh:
+			err := views.Get().OpenSettings()
 			if err != nil {
 				fmt.Println(err)
 			}
