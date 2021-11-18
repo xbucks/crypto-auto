@@ -8,13 +8,13 @@ import (
 	"github.com/hirokimoto/crypto-auto/utils"
 )
 
-func StableTokens(wg *sync.WaitGroup, pairs utils.Pairs) {
+func StableTokens(wg *sync.WaitGroup, pairs utils.Pairs, c *Tokens) {
 	for _, item := range pairs.Data.Pairs {
 		defer wg.Done()
-		c := make(chan string, 1)
-		go utils.Post(c, "swaps", item.Id)
+		cc := make(chan string, 1)
+		go utils.Post(cc, "swaps", item.Id)
 		fmt.Print(".")
-		stableToken(c, item.Id)
+		stableToken(cc, item.Id, c)
 	}
 }
 
@@ -44,7 +44,7 @@ func StoreAndRemovePair(pair string) (err error) {
 	return err
 }
 
-func stableToken(pings <-chan string, id string) {
+func stableToken(pings <-chan string, id string, c *Tokens) {
 	var swaps utils.Swaps
 	msg := <-pings
 	json.Unmarshal([]byte(msg), &swaps)
@@ -56,6 +56,7 @@ func stableToken(pings <-chan string, id string) {
 		howold := howMuchOld(swaps)
 
 		if (max-min)/last < 0.1 && period > 24 && howold < 24 {
+			c.Add(id)
 			fmt.Println(id)
 		}
 	}

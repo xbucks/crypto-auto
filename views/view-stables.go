@@ -17,23 +17,6 @@ import (
 	"github.com/zserge/lorca"
 )
 
-type tokens struct {
-	sync.Mutex
-	data []string
-}
-
-func (c *tokens) Add(pair string) {
-	c.Lock()
-	defer c.Unlock()
-	c.data = append(c.data, pair)
-}
-
-func (c *tokens) Get() []string {
-	c.Lock()
-	defer c.Unlock()
-	return c.data
-}
-
 func (v *Views) OpenStables() error {
 	v.WaitGroup.Add(1)
 	go func(wg *sync.WaitGroup) {
@@ -50,7 +33,7 @@ func (v *Views) OpenStables() error {
 		defer ui.Close()
 
 		// Create and bind Go object to the UI
-		c := &tokens{}
+		c := &services.Tokens{}
 		ui.Bind("counterAdd", c.Add)
 		ui.Bind("counterGet", c.Get)
 
@@ -93,7 +76,7 @@ func (v *Views) OpenStables() error {
 	return nil
 }
 
-func trackStable(c *tokens) {
+func trackStable(c *services.Tokens) {
 	pc := make(chan string, 1)
 	go func() {
 		for {
@@ -108,7 +91,7 @@ func trackStable(c *tokens) {
 			if counts > 0 {
 				var wg sync.WaitGroup
 				wg.Add(counts)
-				services.StableTokens(&wg, pairs)
+				services.StableTokens(&wg, pairs, c)
 				wg.Wait()
 			}
 
