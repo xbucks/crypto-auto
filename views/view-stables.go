@@ -17,6 +17,23 @@ import (
 	"github.com/zserge/lorca"
 )
 
+type tokens struct {
+	sync.Mutex
+	data string
+}
+
+func (c *tokens) Add(pairs string) {
+	c.Lock()
+	defer c.Unlock()
+	c.data = pairs
+}
+
+func (c *tokens) Get() string {
+	c.Lock()
+	defer c.Unlock()
+	return c.data
+}
+
 func (v *Views) OpenStables() error {
 	v.WaitGroup.Add(1)
 	go func(wg *sync.WaitGroup) {
@@ -32,16 +49,16 @@ func (v *Views) OpenStables() error {
 		}
 		defer ui.Close()
 
+		// Create and bind Go object to the UI
+		c := &tokens{}
+		ui.Bind("counterAdd", c.Add)
+		ui.Bind("counterGet", c.Get)
+
 		// A simple way to know when UI is ready (uses body.onload event in JS)
 		ui.Bind("start", func() {
 			log.Println("UI is ready")
-			trackStable()
+			trackStable(c)
 		})
-
-		// Create and bind Go object to the UI
-		c := &counter{}
-		ui.Bind("counterAdd", c.Add)
-		ui.Bind("counterValue", c.Value)
 
 		// Load HTML.
 		// You may also use `data:text/html,<base64>` approach to load initial HTML,
@@ -76,14 +93,14 @@ func (v *Views) OpenStables() error {
 	return nil
 }
 
-func trackStable() {
+func trackStable(c *tokens) {
 	pc := make(chan string, 1)
-
 	go func() {
 		for {
 			utils.Post(pc, "pairs", "")
 
 			msg1 := <-pc
+			c.Add(msg1)
 			var pairs utils.Pairs
 			json.Unmarshal([]byte(msg1), &pairs)
 			counts := len(pairs.Data.Pairs)
