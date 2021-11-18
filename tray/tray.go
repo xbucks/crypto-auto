@@ -2,19 +2,21 @@ package tray
 
 import (
 	"fmt"
+	"io/ioutil"
+	"strconv"
+	"time"
 
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/getlantern/systray"
-	"github.com/hirokimoto/crypto-auto/icon"
 	"github.com/hirokimoto/crypto-auto/views"
 	"github.com/skratchdot/open-golang/open"
 )
 
 func OnReady() {
-	systray.SetIcon(icon.Data)
+	systray.SetIcon(getIcon("assets/auto.ico"))
 
 	mHelloWorld := systray.AddMenuItem("Hello, World!", "Opens a simple HTML Hello, World")
 	systray.AddSeparator()
@@ -26,6 +28,14 @@ func OnReady() {
 
 	sigc := make(chan os.Signal, 1)
 	signal.Notify(sigc, syscall.SIGTERM, syscall.SIGINT)
+
+	go func() {
+		for {
+			systray.SetTitle(getClockTime("Local"))
+			systray.SetTooltip("Local timezone")
+			time.Sleep(1 * time.Second)
+		}
+	}()
 
 	for {
 		select {
@@ -60,4 +70,25 @@ func OnReady() {
 
 func OnQuit() {
 	close(views.Get().Shutdown)
+}
+
+func getClockTime(tz string) string {
+	t := time.Now()
+	utc, _ := time.LoadLocation(tz)
+
+	hour, min, sec := t.In(utc).Clock()
+	return itoaTwoDigits(hour) + ":" + itoaTwoDigits(min) + ":" + itoaTwoDigits(sec)
+}
+
+func itoaTwoDigits(i int) string {
+	b := "0" + strconv.Itoa(i)
+	return b[len(b)-2:]
+}
+
+func getIcon(s string) []byte {
+	b, err := ioutil.ReadFile(s)
+	if err != nil {
+		fmt.Print(err)
+	}
+	return b
 }
