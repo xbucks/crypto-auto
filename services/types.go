@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"sync"
 )
 
@@ -36,6 +37,16 @@ func (c *Tokens) Get() []Token {
 	c.Lock()
 	defer c.Unlock()
 	return c.data
+}
+
+func (c *Tokens) GetByString() []string {
+	c.Lock()
+	defer c.Unlock()
+	t := []string{}
+	for _, token := range c.data {
+		t = append(t, fmt.Sprintf("%s %s %s", token.name, token.address, token.price))
+	}
+	return t
 }
 
 func (c *Tokens) GetLength() int {
