@@ -5,37 +5,9 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"sync"
 
 	gosxnotifier "github.com/deckarep/gosx-notifier"
 )
-
-type Token struct {
-	name    string
-	address string
-	price   string
-	change  string
-	min     string
-	max     string
-	period  string
-}
-
-type Tokens struct {
-	sync.Mutex
-	data []Token
-}
-
-func (c *Tokens) Add(pair Token) {
-	c.Lock()
-	defer c.Unlock()
-	c.data = append(c.data, pair)
-}
-
-func (c *Tokens) Get() []Token {
-	c.Lock()
-	defer c.Unlock()
-	return c.data
-}
 
 func Notify(title string, message string, link string) {
 	// logo := canvas.NewImageFromResource(data.FyneScene)

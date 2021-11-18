@@ -18,19 +18,16 @@
 	<body onload=start()>
 		<!-- UI layout -->
 		<div class="counter-container">
-			<div class="counter"></div>
+			<div class="counter">Stable tokens</div>
 			<div class="btn-row">
-				<div class="btn btn-incr">+1</div>
-				<div class="btn btn-decr">-1</div>
+				<div class="btn">Synchronize</div>
 			</div>
 			<div class="information"></div>
 		</div>
 
 		<!-- Connect UI actions to Go functions -->
 		<script>
-			const counter = document.querySelector('.counter');
-			const btnIncr = document.querySelector('.btn-incr');
-			const btnDecr = document.querySelector('.btn-decr');
+			const btnSync = document.querySelector('.btn');
 			const data = document.querySelector('.information');
 
 			// We use async/await because Go functions are asynchronous
@@ -39,13 +36,8 @@
 				data.innerText = JSON.stringify(pairs);
 			};
 
-			btnIncr.addEventListener('click', async () => {
+			btnSync.addEventListener('click', async () => {
 				// await addPair("test plus"); // Call Go function
-				render();
-			});
-
-			btnDecr.addEventListener('click', async () => {
-				// await addPair("test minus"); // Call Go function
 				render();
 			});
 
