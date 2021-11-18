@@ -34,6 +34,44 @@ func OnReady() {
 	sigc := make(chan os.Signal, 1)
 	signal.Notify(sigc, syscall.SIGTERM, syscall.SIGINT)
 
+	trackPairs()
+
+	for {
+		select {
+
+		case <-mHelloWorld.ClickedCh:
+			err := views.Get().OpenIndex()
+			if err != nil {
+				fmt.Println(err)
+			}
+		case <-mGoogleBrowser.ClickedCh:
+			err := open.Run("https://www.google.com")
+			if err != nil {
+				fmt.Println(err)
+			}
+		case <-mGoogleEmbed.ClickedCh:
+			err := views.Get().OpenGoogle()
+			if err != nil {
+				fmt.Println(err)
+			}
+		case <-mSettings.ClickedCh:
+			err := views.Get().OpenSettings()
+			if err != nil {
+				fmt.Println(err)
+			}
+		case <-mQuit.ClickedCh:
+			systray.Quit()
+		case <-sigc:
+			systray.Quit()
+		}
+	}
+}
+
+func OnQuit() {
+	close(views.Get().Shutdown)
+}
+
+func trackPairs() {
 	money := accounting.Accounting{Symbol: "$", Precision: 6}
 	pairs := []string{"0x7a99822968410431edd1ee75dab78866e31caf39"}
 	olds := []float64{0.1}
@@ -71,40 +109,6 @@ func OnReady() {
 			wg.Wait()
 		}
 	}()
-
-	for {
-		select {
-
-		case <-mHelloWorld.ClickedCh:
-			err := views.Get().OpenIndex()
-			if err != nil {
-				fmt.Println(err)
-			}
-		case <-mGoogleBrowser.ClickedCh:
-			err := open.Run("https://www.google.com")
-			if err != nil {
-				fmt.Println(err)
-			}
-		case <-mGoogleEmbed.ClickedCh:
-			err := views.Get().OpenGoogle()
-			if err != nil {
-				fmt.Println(err)
-			}
-		case <-mSettings.ClickedCh:
-			err := views.Get().OpenSettings()
-			if err != nil {
-				fmt.Println(err)
-			}
-		case <-mQuit.ClickedCh:
-			systray.Quit()
-		case <-sigc:
-			systray.Quit()
-		}
-	}
-}
-
-func OnQuit() {
-	close(views.Get().Shutdown)
 }
 
 func getClockTime(tz string) string {
