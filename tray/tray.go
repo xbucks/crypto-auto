@@ -23,8 +23,10 @@ import (
 func OnReady() {
 	systray.SetIcon(getIcon("assets/auto.ico"))
 
-	mDashboard := systray.AddMenuItem("Open Dashboard", "Opens a simple HTML Hello, World")
+	mStart := systray.AddMenuItem("Start", "Start tracking pairs.")
+	mStop := systray.AddMenuItem("Stop", "Stop tracking pairs.")
 	systray.AddSeparator()
+	mDashboard := systray.AddMenuItem("Open Dashboard", "Opens a simple HTML Hello, World")
 	mKekBrowser := systray.AddMenuItem("KEK in Browser", "Opens Google in a normal browser")
 	mDexEmbed := systray.AddMenuItem("DEX in Window", "Opens Google in a custom window")
 	mStables := systray.AddMenuItem("Stable tokens", "Find stable tokens")
@@ -40,6 +42,11 @@ func OnReady() {
 	for {
 		select {
 
+		case <-mStart.ClickedCh:
+			c := &services.Tokens{}
+			trackStable(c)
+
+		case <-mStop.ClickedCh:
 		case <-mDashboard.ClickedCh:
 			err := views.Get().OpenIndex()
 			if err != nil {
@@ -101,7 +108,7 @@ func trackPairs() {
 			duration := fmt.Sprintf("%.2f hours", d)
 
 			systray.SetTitle(fmt.Sprintf("%s %s", n, price))
-			systray.SetTooltip("Local timezone")
+			systray.SetTooltip("Crypto Auto")
 			fmt.Println(getClockTime("Local"), "---->>>  ", n, change, duration, a)
 
 			if p != olds[0] {
@@ -113,6 +120,29 @@ func trackPairs() {
 
 			time.Sleep(1 * time.Second)
 			wg.Wait()
+		}
+	}()
+}
+
+func trackStable(c *services.Tokens) {
+	pc := make(chan string, 1)
+	go func() {
+		for {
+			utils.Post(pc, "pairs", 1000, "")
+
+			msg1 := <-pc
+			var pairs utils.Pairs
+			json.Unmarshal([]byte(msg1), &pairs)
+			counts := len(pairs.Data.Pairs)
+			fmt.Println("Counts of Pairs: ", counts)
+			if counts > 0 {
+				var wg sync.WaitGroup
+				wg.Add(counts)
+				services.StableTokens(&wg, pairs, c)
+				wg.Wait()
+			}
+
+			time.Sleep(time.Minute * 10)
 		}
 	}()
 }
