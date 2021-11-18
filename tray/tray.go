@@ -113,35 +113,25 @@ func trackPairs() {
 }
 
 func trackStable() {
-	pc := make(chan string)
-	sc := make(chan string)
+	pc := make(chan string, 1)
 
 	go func() {
 		for {
 			utils.Post(pc, "pairs", "")
-			time.Sleep(time.Minute * 10)
-		}
-	}()
 
-	go func() {
-		for {
-			select {
-			case msg1 := <-pc:
-				var pairs utils.Pairs
-
-				json.Unmarshal([]byte(msg1), &pairs)
-
-				counts := len(pairs.Data.Pairs)
-				fmt.Println("Counts of Pairs: ", counts)
-				if counts > 0 {
-					var wg sync.WaitGroup
-					wg.Add(counts)
-					go services.StableTokens(&wg, pairs, sc)
-					wg.Wait()
-				}
-			case msg2 := <-sc:
-				fmt.Println(msg2)
+			msg1 := <-pc
+			var pairs utils.Pairs
+			json.Unmarshal([]byte(msg1), &pairs)
+			counts := len(pairs.Data.Pairs)
+			fmt.Println("Counts of Pairs: ", counts)
+			if counts > 0 {
+				var wg sync.WaitGroup
+				wg.Add(counts)
+				services.StableTokens(&wg, pairs)
+				wg.Wait()
 			}
+
+			time.Sleep(time.Minute * 10)
 		}
 	}()
 }

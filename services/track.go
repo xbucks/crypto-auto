@@ -9,9 +9,8 @@ import (
 )
 
 func TrackPairs(wg *sync.WaitGroup, pairs []string, target chan string) {
-	defer wg.Done()
-
 	for _, pair := range pairs {
+		defer wg.Done()
 		go utils.Post(target, "swaps", pair)
 		fmt.Print(".")
 	}
