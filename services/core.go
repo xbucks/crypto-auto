@@ -10,18 +10,27 @@ import (
 	gosxnotifier "github.com/deckarep/gosx-notifier"
 )
 
-type Tokens struct {
-	sync.Mutex
-	data []string
+type Token struct {
+	name   string
+	price  string
+	change string
+	min    string
+	max    string
+	period string
 }
 
-func (c *Tokens) Add(pair string) {
+type Tokens struct {
+	sync.Mutex
+	data []Token
+}
+
+func (c *Tokens) Add(pair Token) {
 	c.Lock()
 	defer c.Unlock()
 	c.data = append(c.data, pair)
 }
 
-func (c *Tokens) Get() []string {
+func (c *Tokens) Get() []Token {
 	c.Lock()
 	defer c.Unlock()
 	return c.data

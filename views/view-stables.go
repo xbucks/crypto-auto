@@ -83,7 +83,6 @@ func trackStable(c *services.Tokens) {
 			utils.Post(pc, "pairs", "")
 
 			msg1 := <-pc
-			c.Add("0x7a99822968410431edd1ee75dab78866e31caf39")
 			var pairs utils.Pairs
 			json.Unmarshal([]byte(msg1), &pairs)
 			counts := len(pairs.Data.Pairs)

@@ -18,14 +18,14 @@ func StableTokens(wg *sync.WaitGroup, pairs utils.Pairs, c *Tokens) {
 	}
 }
 
-func TradableTokens(wg *sync.WaitGroup, pairs utils.Pairs, target chan string) {
+func TradableTokens(wg *sync.WaitGroup, pairs utils.Pairs, c *Tokens) {
 	defer wg.Done()
 
 	for _, item := range pairs.Data.Pairs {
-		c := make(chan string, 1)
-		go utils.Post(c, "swaps", item.Id)
+		cc := make(chan string, 1)
+		go utils.Post(cc, "swaps", item.Id)
 		fmt.Print(".")
-		tradableToken(c, item.Id, target)
+		tradableToken(cc, item.Id, c)
 	}
 }
 
@@ -44,37 +44,54 @@ func StoreAndRemovePair(pair string) (err error) {
 	return err
 }
 
-func stableToken(pings <-chan string, id string, c *Tokens) {
+func stableToken(pings chan string, id string, c *Tokens) {
 	var swaps utils.Swaps
 	msg := <-pings
 	json.Unmarshal([]byte(msg), &swaps)
 
 	if len(swaps.Data.Swaps) > 0 {
-		min, max, _, _, _, _ := minMax(swaps)
-		last, _ := priceOfSwap(swaps.Data.Swaps[0])
-		_, _, period := periodOfSwaps(swaps)
-		howold := howMuchOld(swaps)
+		name, price, change, period, _ := SwapsInfo(swaps, 0.1)
 
-		if (max-min)/last < 0.1 && period > 24 && howold < 24 {
-			c.Add(id)
+		min, max, _, _, _, _ := minMax(swaps)
+		howOld := howMuchOld(swaps)
+
+		if (max-min)/price < 0.1 && period > 24 && howOld < 24 {
+			ct := Token{
+				name:   name,
+				price:  fmt.Sprintf("%f", price),
+				change: fmt.Sprintf("%f", change),
+				min:    fmt.Sprintf("%f", min),
+				max:    fmt.Sprintf("%f", max),
+				period: fmt.Sprintf("%f", period),
+			}
+			c.Add(ct)
 			fmt.Println(id)
 		}
 	}
 }
 
-func tradableToken(pings <-chan string, id string, target chan string) {
+func tradableToken(pings chan string, id string, c *Tokens) {
 	var swaps utils.Swaps
 	msg := <-pings
 	json.Unmarshal([]byte(msg), &swaps)
 
 	if len(swaps.Data.Swaps) > 0 {
+		name, price, change, period, _ := SwapsInfo(swaps, 0.1)
+
 		min, max, _, _, _, _ := minMax(swaps)
-		last, _ := priceOfSwap(swaps.Data.Swaps[0])
-		_, _, period := periodOfSwaps(swaps)
 		howOld := howMuchOld(swaps)
 
-		if (max-min)/last > 0.1 && period < 6 && howOld < 24 {
-			target <- id
+		if (max-min)/price > 0.1 && period < 6 && howOld < 24 {
+			ct := Token{
+				name:   name,
+				price:  fmt.Sprintf("%f", price),
+				change: fmt.Sprintf("%f", change),
+				min:    fmt.Sprintf("%f", min),
+				max:    fmt.Sprintf("%f", max),
+				period: fmt.Sprintf("%f", period),
+			}
+			c.Add(ct)
+			fmt.Println(id)
 		}
 	}
 }
