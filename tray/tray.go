@@ -32,13 +32,13 @@ func OnReady() {
 	signal.Notify(sigc, syscall.SIGTERM, syscall.SIGINT)
 
 	services.TracPairs()
+	c := &services.Tokens{}
 
 	for {
 		select {
 
 		case <-mStart.ClickedCh:
-			c := &services.Tokens{}
-			services.TrackStable(c)
+			go services.TrackStable(c)
 		case <-mStop.ClickedCh:
 		case <-mDashboard.ClickedCh:
 			err := views.Get().OpenIndex()
