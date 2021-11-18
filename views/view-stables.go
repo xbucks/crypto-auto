@@ -32,7 +32,9 @@ func (v *Views) OpenStables() error {
 		// Create and bind Go object to the UI
 		c := &services.Tokens{}
 		ui.Bind("addPair", c.Add)
-		ui.Bind("getPairs", c.GetByString)
+		ui.Bind("getPairs", c.Get)
+		ui.Bind("getLength", c.GetLength)
+		ui.Bind("getItem", c.GetItem)
 
 		// A simple way to know when UI is ready (uses body.onload event in JS)
 		ui.Bind("start", func() {

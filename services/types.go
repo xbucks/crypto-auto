@@ -1,7 +1,7 @@
 package services
 
 import (
-	"fmt"
+	"reflect"
 	"sync"
 )
 
@@ -39,14 +39,12 @@ func (c *Tokens) Get() []Token {
 	return c.data
 }
 
-func (c *Tokens) GetByString() []string {
+func (c *Tokens) GetItem(index int, key string) string {
 	c.Lock()
 	defer c.Unlock()
-	t := []string{}
-	for _, token := range c.data {
-		t = append(t, fmt.Sprintf("%s %s %s", token.name, token.address, token.price))
-	}
-	return t
+	r := reflect.ValueOf(c.data[index])
+	f := reflect.Indirect(r).FieldByName(key)
+	return f.String()
 }
 
 func (c *Tokens) GetLength() int {

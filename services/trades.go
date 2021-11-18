@@ -148,7 +148,7 @@ func stableToken(pings chan string, id string, t *Tokens) {
 				change:  fmt.Sprintf("%f", change),
 				min:     fmt.Sprintf("%f", min),
 				max:     fmt.Sprintf("%f", max),
-				period:  fmt.Sprintf("%f", period),
+				period:  fmt.Sprintf(".2%f", period),
 			}
 			t.Add(ct)
 			fmt.Println("New token!!!!!   ", ct.name)
@@ -175,7 +175,7 @@ func tradableToken(pings chan string, id string, t *Tokens) {
 				change:  fmt.Sprintf("%f", change),
 				min:     fmt.Sprintf("%f", min),
 				max:     fmt.Sprintf("%f", max),
-				period:  fmt.Sprintf("%f", period),
+				period:  fmt.Sprintf(".2%f", period),
 			}
 			t.Add(ct)
 			fmt.Println("New token!!!!!   ", ct.name)
