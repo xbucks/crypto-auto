@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/crypto-auto/utils"
+	"github.com/hirokimoto/crypto-auto/utils"
 )
 
 func TrackPairs(wg *sync.WaitGroup, pairs []string, target chan string) {

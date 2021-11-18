@@ -35,7 +35,7 @@ func OnReady() {
 	signal.Notify(sigc, syscall.SIGTERM, syscall.SIGINT)
 
 	money := accounting.Accounting{Symbol: "$", Precision: 6}
-	pairs := []string{"0x9d9681d71142049594020bd863d34d9f48d9df58"}
+	pairs := []string{"0x7a99822968410431edd1ee75dab78866e31caf39"}
 
 	go func() {
 		for {

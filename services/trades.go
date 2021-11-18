@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/crypto-auto/utils"
+	"github.com/hirokimoto/crypto-auto/utils"
 )
 
 func StableTokens(wg *sync.WaitGroup, pairs utils.Pairs) {

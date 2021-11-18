@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/crypto-auto/utils"
+	"github.com/hirokimoto/crypto-auto/utils"
 )
 
 func SwapsInfo(swaps utils.Swaps, ps float64) (name string, price float64, change float64, duration float64, alert bool) {
