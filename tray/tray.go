@@ -39,7 +39,7 @@ func OnReady() {
 
 	trackPairs()
 
-	token := make(chan string, 1)
+	token := make(chan services.Token, 1)
 
 	for {
 		select {
@@ -73,8 +73,8 @@ func OnReady() {
 			if err != nil {
 				fmt.Println(err)
 			}
-		case <-token:
-			fmt.Println("New token!!!!! ", <-token)
+		case msg1 := <-token:
+			fmt.Println("New token!!!!! ", msg1.Get())
 		case <-mQuit.ClickedCh:
 			systray.Quit()
 		case <-sigc:
@@ -127,7 +127,7 @@ func trackPairs() {
 	}()
 }
 
-func trackStable(t chan string) {
+func trackStable(t chan services.Token) {
 	pc := make(chan string, 1)
 	for {
 		go utils.Post(pc, "pairs", 1000, "")

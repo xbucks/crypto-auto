@@ -18,7 +18,7 @@ type Token struct {
 func (c *Token) Get() string {
 	c.Lock()
 	defer c.Unlock()
-	return c.name
+	return c.name + " " + c.address + " " + c.price
 }
 
 type Tokens struct {

@@ -8,7 +8,7 @@ import (
 	"github.com/hirokimoto/crypto-auto/utils"
 )
 
-func StableTokens(wg *sync.WaitGroup, pairs utils.Pairs, t chan string) {
+func StableTokens(wg *sync.WaitGroup, pairs utils.Pairs, t chan Token) {
 	for _, item := range pairs.Data.Pairs {
 		defer wg.Done()
 		cc := make(chan string, 1)
@@ -18,7 +18,7 @@ func StableTokens(wg *sync.WaitGroup, pairs utils.Pairs, t chan string) {
 	}
 }
 
-func TradableTokens(wg *sync.WaitGroup, pairs utils.Pairs, t chan string) {
+func TradableTokens(wg *sync.WaitGroup, pairs utils.Pairs, t chan Token) {
 	defer wg.Done()
 
 	for _, item := range pairs.Data.Pairs {
@@ -44,7 +44,7 @@ func StoreAndRemovePair(pair string) (err error) {
 	return err
 }
 
-func stableToken(pings chan string, id string, t chan string) {
+func stableToken(pings chan string, id string, t chan Token) {
 	var swaps utils.Swaps
 	msg := <-pings
 	json.Unmarshal([]byte(msg), &swaps)
@@ -65,12 +65,12 @@ func stableToken(pings chan string, id string, t chan string) {
 				max:     fmt.Sprintf("%f", max),
 				period:  fmt.Sprintf("%f", period),
 			}
-			t <- ct.name
+			t <- ct
 		}
 	}
 }
 
-func tradableToken(pings chan string, id string, t chan string) {
+func tradableToken(pings chan string, id string, t chan Token) {
 	var swaps utils.Swaps
 	msg := <-pings
 	json.Unmarshal([]byte(msg), &swaps)
@@ -91,7 +91,7 @@ func tradableToken(pings chan string, id string, t chan string) {
 				max:     fmt.Sprintf("%f", max),
 				period:  fmt.Sprintf("%f", period),
 			}
-			t <- ct.name
+			t <- ct
 		}
 	}
 }

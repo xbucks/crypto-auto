@@ -101,7 +101,7 @@ func periodOfSwaps(swaps utils.Swaps) (first time.Time, last time.Time, period f
 }
 
 func priceAlert(swaps utils.Swaps, change float64) (state bool) {
-	if swaps.Data.Swaps != nil && len(swaps.Data.Swaps) > 0 {
+	if swaps.Data.Swaps != nil && len(swaps.Data.Swaps) > 1 {
 		first, _ := priceOfSwap(swaps.Data.Swaps[0])
 		second, _ := priceOfSwap(swaps.Data.Swaps[1])
 		state = (first-second)/second > change

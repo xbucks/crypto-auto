@@ -76,7 +76,7 @@ func (v *Views) OpenStables() error {
 	return nil
 }
 
-func trackStable(t chan string) {
+func trackStable(t chan services.Token) {
 	pc := make(chan string, 1)
 	go func() {
 		for {
