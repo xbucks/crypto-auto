@@ -55,9 +55,9 @@ func OnReady() {
 			change := money.FormatMoney(c)
 			duration := fmt.Sprintf("%.2f hours", d)
 
-			systray.SetTitle(fmt.Sprintf("%s %s", price, getClockTime("Local")))
+			systray.SetTitle(fmt.Sprintf("%s %s", n, price))
 			systray.SetTooltip("Local timezone")
-			fmt.Println(n, change, duration, a)
+			fmt.Println(getClockTime("Local"), "---->>>  ", n, change, duration, a)
 
 			time.Sleep(1 * time.Second)
 			wg.Wait()
