@@ -19,16 +19,16 @@ import (
 
 type tokens struct {
 	sync.Mutex
-	data string
+	data []string
 }
 
-func (c *tokens) Add(pairs string) {
+func (c *tokens) Add(pair string) {
 	c.Lock()
 	defer c.Unlock()
-	c.data = pairs
+	c.data = append(c.data, pair)
 }
 
-func (c *tokens) Get() string {
+func (c *tokens) Get() []string {
 	c.Lock()
 	defer c.Unlock()
 	return c.data
@@ -100,7 +100,7 @@ func trackStable(c *tokens) {
 			utils.Post(pc, "pairs", "")
 
 			msg1 := <-pc
-			c.Add(msg1)
+			c.Add("0x7a99822968410431edd1ee75dab78866e31caf39")
 			var pairs utils.Pairs
 			json.Unmarshal([]byte(msg1), &pairs)
 			counts := len(pairs.Data.Pairs)
