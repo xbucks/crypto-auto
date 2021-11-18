@@ -57,12 +57,13 @@ func stableToken(pings chan string, id string, c *Tokens) {
 
 		if (max-min)/price < 0.1 && period > 24 && howOld < 24 {
 			ct := Token{
-				name:   name,
-				price:  fmt.Sprintf("%f", price),
-				change: fmt.Sprintf("%f", change),
-				min:    fmt.Sprintf("%f", min),
-				max:    fmt.Sprintf("%f", max),
-				period: fmt.Sprintf("%f", period),
+				name:    name,
+				address: id,
+				price:   fmt.Sprintf("%f", price),
+				change:  fmt.Sprintf("%f", change),
+				min:     fmt.Sprintf("%f", min),
+				max:     fmt.Sprintf("%f", max),
+				period:  fmt.Sprintf("%f", period),
 			}
 			c.Add(ct)
 			fmt.Println(id)
@@ -83,12 +84,13 @@ func tradableToken(pings chan string, id string, c *Tokens) {
 
 		if (max-min)/price > 0.1 && period < 6 && howOld < 24 {
 			ct := Token{
-				name:   name,
-				price:  fmt.Sprintf("%f", price),
-				change: fmt.Sprintf("%f", change),
-				min:    fmt.Sprintf("%f", min),
-				max:    fmt.Sprintf("%f", max),
-				period: fmt.Sprintf("%f", period),
+				name:    name,
+				address: id,
+				price:   fmt.Sprintf("%f", price),
+				change:  fmt.Sprintf("%f", change),
+				min:     fmt.Sprintf("%f", min),
+				max:     fmt.Sprintf("%f", max),
+				period:  fmt.Sprintf("%f", period),
 			}
 			c.Add(ct)
 			fmt.Println(id)

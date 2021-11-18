@@ -11,12 +11,13 @@ import (
 )
 
 type Token struct {
-	name   string
-	price  string
-	change string
-	min    string
-	max    string
-	period string
+	name    string
+	address string
+	price   string
+	change  string
+	min     string
+	max     string
+	period  string
 }
 
 type Tokens struct {
