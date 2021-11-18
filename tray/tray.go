@@ -23,12 +23,12 @@ import (
 func OnReady() {
 	systray.SetIcon(getIcon("assets/auto.ico"))
 
-	mHelloWorld := systray.AddMenuItem("Hello, World!", "Opens a simple HTML Hello, World")
+	mDashboard := systray.AddMenuItem("Open Dashboard", "Opens a simple HTML Hello, World")
 	systray.AddSeparator()
-	mGoogleBrowser := systray.AddMenuItem("Google in Browser", "Opens Google in a normal browser")
-	mGoogleEmbed := systray.AddMenuItem("Google in Window", "Opens Google in a custom window")
+	mKekBrowser := systray.AddMenuItem("KEK in Browser", "Opens Google in a normal browser")
+	mDexEmbed := systray.AddMenuItem("DEX in Window", "Opens Google in a custom window")
 	mStables := systray.AddMenuItem("Stable tokens", "Find stable tokens")
-	mSettings := systray.AddMenuItem("Settings in Window", "Opens Google in a custom window")
+	mSettings := systray.AddMenuItem("Settings", "Opens Google in a custom window")
 	systray.AddSeparator()
 	mQuit := systray.AddMenuItem("Quit", "Quit example tray application")
 
@@ -40,17 +40,17 @@ func OnReady() {
 	for {
 		select {
 
-		case <-mHelloWorld.ClickedCh:
+		case <-mDashboard.ClickedCh:
 			err := views.Get().OpenIndex()
 			if err != nil {
 				fmt.Println(err)
 			}
-		case <-mGoogleBrowser.ClickedCh:
+		case <-mKekBrowser.ClickedCh:
 			err := open.Run("https://www.google.com")
 			if err != nil {
 				fmt.Println(err)
 			}
-		case <-mGoogleEmbed.ClickedCh:
+		case <-mDexEmbed.ClickedCh:
 			err := views.Get().OpenGoogle()
 			if err != nil {
 				fmt.Println(err)
