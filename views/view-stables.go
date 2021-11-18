@@ -43,6 +43,7 @@ func (v *Views) OpenStables() error {
 			token := make(chan services.Token, 1)
 			go trackStable(token)
 			msg := <-token
+			c.Add(msg)
 			fmt.Println("New token!!!!!   ", msg.Get())
 		})
 
