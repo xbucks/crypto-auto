@@ -1,9 +1,11 @@
 package tray
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"strconv"
+	"sync"
 	"time"
 
 	"os"
@@ -11,7 +13,10 @@ import (
 	"syscall"
 
 	"github.com/getlantern/systray"
+	"github.com/hirokimoto/crypto-auto/services"
+	"github.com/hirokimoto/crypto-auto/utils"
 	"github.com/hirokimoto/crypto-auto/views"
+	"github.com/leekchan/accounting"
 	"github.com/skratchdot/open-golang/open"
 )
 
@@ -29,11 +34,33 @@ func OnReady() {
 	sigc := make(chan os.Signal, 1)
 	signal.Notify(sigc, syscall.SIGTERM, syscall.SIGINT)
 
+	money := accounting.Accounting{Symbol: "$", Precision: 6}
+	pairs := []string{"0x9d9681d71142049594020bd863d34d9f48d9df58"}
+
 	go func() {
 		for {
-			systray.SetTitle(getClockTime("Local"))
+			var wg sync.WaitGroup
+			wg.Add(len(pairs))
+
+			cc := make(chan string, 1)
+			var swaps utils.Swaps
+			go services.TrackPairs(&wg, pairs, cc)
+
+			ai := 0.1
+			msg := <-cc
+			json.Unmarshal([]byte(msg), &swaps)
+			n, p, c, d, a := services.SwapsInfo(swaps, ai)
+
+			price := money.FormatMoney(p)
+			change := money.FormatMoney(c)
+			duration := fmt.Sprintf("%.2f hours", d)
+
+			systray.SetTitle(fmt.Sprintf("%s %s", price, getClockTime("Local")))
 			systray.SetTooltip("Local timezone")
+			fmt.Println(n, change, duration, a)
+
 			time.Sleep(1 * time.Second)
+			wg.Wait()
 		}
 	}()
 
