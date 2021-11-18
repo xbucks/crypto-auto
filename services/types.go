@@ -5,6 +5,7 @@ import (
 )
 
 type Token struct {
+	sync.Mutex
 	name    string
 	address string
 	price   string
@@ -12,6 +13,12 @@ type Token struct {
 	min     string
 	max     string
 	period  string
+}
+
+func (c *Token) Get() string {
+	c.Lock()
+	defer c.Unlock()
+	return c.name
 }
 
 type Tokens struct {
