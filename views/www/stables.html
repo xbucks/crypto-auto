@@ -35,16 +35,17 @@
 
 			// We use async/await because Go functions are asynchronous
 			const render = async () => {
-				data.innerText = await window.counterGet();
+				const pairs = await window.getPairs();
+				data.innerText = JSON.stringify(pairs);
 			};
 
 			btnIncr.addEventListener('click', async () => {
-				// await counterAdd("test plus"); // Call Go function
+				// await addPair("test plus"); // Call Go function
 				render();
 			});
 
 			btnDecr.addEventListener('click', async () => {
-				// await counterAdd("test minus"); // Call Go function
+				// await addPair("test minus"); // Call Go function
 				render();
 			});
 
