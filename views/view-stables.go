@@ -1,7 +1,6 @@
 package views
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"net"
@@ -10,10 +9,8 @@ import (
 	"os/signal"
 	"runtime"
 	"sync"
-	"time"
 
 	"github.com/hirokimoto/crypto-auto/services"
-	"github.com/hirokimoto/crypto-auto/utils"
 	"github.com/zserge/lorca"
 )
 
@@ -40,7 +37,7 @@ func (v *Views) OpenStables() error {
 		// A simple way to know when UI is ready (uses body.onload event in JS)
 		ui.Bind("start", func() {
 			log.Println("UI is ready")
-			trackStable(c)
+			services.TrackStable(c)
 		})
 
 		// Load HTML.
@@ -74,25 +71,4 @@ func (v *Views) OpenStables() error {
 	}(v.WaitGroup)
 
 	return nil
-}
-
-func trackStable(t *services.Tokens) {
-	pc := make(chan string, 1)
-	for {
-		go utils.Post(pc, "pairs", 1000, "")
-
-		msg1 := <-pc
-		var pairs utils.Pairs
-		json.Unmarshal([]byte(msg1), &pairs)
-		counts := len(pairs.Data.Pairs)
-		fmt.Println("Counts of Pairs: ", counts)
-		if counts > 0 {
-			var wg sync.WaitGroup
-			wg.Add(counts)
-			services.StableTokens(&wg, pairs, t)
-			wg.Wait()
-		}
-
-		time.Sleep(time.Minute * 10)
-	}
 }
