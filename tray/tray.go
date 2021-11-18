@@ -39,13 +39,12 @@ func OnReady() {
 
 	trackPairs()
 
-	token := make(chan services.Token, 1)
-
 	for {
 		select {
 
 		case <-mStart.ClickedCh:
-			go trackStable(token)
+			c := &services.Tokens{}
+			trackStable(c)
 
 		case <-mStop.ClickedCh:
 		case <-mDashboard.ClickedCh:
@@ -73,8 +72,6 @@ func OnReady() {
 			if err != nil {
 				fmt.Println(err)
 			}
-		case msg1 := <-token:
-			fmt.Println("New token!!!!! ", msg1.Get())
 		case <-mQuit.ClickedCh:
 			systray.Quit()
 		case <-sigc:
@@ -127,25 +124,27 @@ func trackPairs() {
 	}()
 }
 
-func trackStable(t chan services.Token) {
-	pc := make(chan string, 1)
-	for {
-		go utils.Post(pc, "pairs", 1000, "")
+func trackStable(t *services.Tokens) {
+	go func() {
+		pc := make(chan string, 1)
+		for {
+			go utils.Post(pc, "pairs", 1000, "")
 
-		msg1 := <-pc
-		var pairs utils.Pairs
-		json.Unmarshal([]byte(msg1), &pairs)
-		counts := len(pairs.Data.Pairs)
-		fmt.Println("Counts of Pairs: ", counts)
-		if counts > 0 {
-			var wg sync.WaitGroup
-			wg.Add(counts)
-			services.StableTokens(&wg, pairs, t)
-			wg.Wait()
+			msg1 := <-pc
+			var pairs utils.Pairs
+			json.Unmarshal([]byte(msg1), &pairs)
+			counts := len(pairs.Data.Pairs)
+			fmt.Println("Counts of Pairs: ", counts)
+			if counts > 0 {
+				var wg sync.WaitGroup
+				wg.Add(counts)
+				services.StableTokens(&wg, pairs, t)
+				wg.Wait()
+			}
+
+			time.Sleep(time.Minute * 10)
 		}
-
-		time.Sleep(time.Minute * 10)
-	}
+	}()
 }
 
 func getClockTime(tz string) string {
