@@ -52,7 +52,6 @@ func OnReady() {
 			}
 		case <-mGoogleEmbed.ClickedCh:
 			err := views.Get().OpenGoogle()
-			trackStable()
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -114,30 +113,6 @@ func trackPairs() {
 
 			time.Sleep(1 * time.Second)
 			wg.Wait()
-		}
-	}()
-}
-
-func trackStable() {
-	pc := make(chan string, 1)
-
-	go func() {
-		for {
-			utils.Post(pc, "pairs", "")
-
-			msg1 := <-pc
-			var pairs utils.Pairs
-			json.Unmarshal([]byte(msg1), &pairs)
-			counts := len(pairs.Data.Pairs)
-			fmt.Println("Counts of Pairs: ", counts)
-			if counts > 0 {
-				var wg sync.WaitGroup
-				wg.Add(counts)
-				services.StableTokens(&wg, pairs)
-				wg.Wait()
-			}
-
-			time.Sleep(time.Minute * 10)
 		}
 	}()
 }
