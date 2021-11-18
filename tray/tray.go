@@ -36,6 +36,7 @@ func OnReady() {
 
 	money := accounting.Accounting{Symbol: "$", Precision: 6}
 	pairs := []string{"0x7a99822968410431edd1ee75dab78866e31caf39"}
+	olds := []float64{0.1}
 
 	go func() {
 		for {
@@ -58,6 +59,13 @@ func OnReady() {
 			systray.SetTitle(fmt.Sprintf("%s %s", n, price))
 			systray.SetTooltip("Local timezone")
 			fmt.Println(getClockTime("Local"), "---->>>  ", n, change, duration, a)
+
+			if p != olds[0] {
+				message := fmt.Sprintf("%s: %s %s %s", n, price, change, duration)
+				url := "https://kek.tools/t/0x295b42684f90c77da7ea46336001010f2791ec8c?pair=0x7a99822968410431edd1ee75dab78866e31caf39"
+				services.Notify("Price changed!", message, url)
+			}
+			olds[0] = p
 
 			time.Sleep(1 * time.Second)
 			wg.Wait()
