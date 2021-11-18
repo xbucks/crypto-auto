@@ -40,7 +40,6 @@ func (v *Views) OpenStables() error {
 		// A simple way to know when UI is ready (uses body.onload event in JS)
 		ui.Bind("start", func() {
 			log.Println("UI is ready")
-			// trackStable(c)
 		})
 
 		// Load HTML.
@@ -63,7 +62,7 @@ func (v *Views) OpenStables() error {
 		`)
 
 		// Wait until the interrupt signal arrives or browser window is closed
-		sigc := make(chan os.Signal)
+		sigc := make(chan os.Signal, 1)
 		signal.Notify(sigc, os.Interrupt)
 		select {
 		case <-sigc:
@@ -78,23 +77,21 @@ func (v *Views) OpenStables() error {
 
 func trackStable(t chan services.Token) {
 	pc := make(chan string, 1)
-	go func() {
-		for {
-			utils.Post(pc, "pairs", 1000, "")
+	for {
+		go utils.Post(pc, "pairs", 1000, "")
 
-			msg1 := <-pc
-			var pairs utils.Pairs
-			json.Unmarshal([]byte(msg1), &pairs)
-			counts := len(pairs.Data.Pairs)
-			fmt.Println("Counts of Pairs: ", counts)
-			if counts > 0 {
-				var wg sync.WaitGroup
-				wg.Add(counts)
-				services.StableTokens(&wg, pairs, t)
-				wg.Wait()
-			}
-
-			time.Sleep(time.Minute * 10)
+		msg1 := <-pc
+		var pairs utils.Pairs
+		json.Unmarshal([]byte(msg1), &pairs)
+		counts := len(pairs.Data.Pairs)
+		fmt.Println("Counts of Pairs: ", counts)
+		if counts > 0 {
+			var wg sync.WaitGroup
+			wg.Add(counts)
+			services.StableTokens(&wg, pairs, t)
+			wg.Wait()
 		}
-	}()
+
+		time.Sleep(time.Minute * 10)
+	}
 }
