@@ -40,7 +40,7 @@ func (v *Views) OpenStables() error {
 		// A simple way to know when UI is ready (uses body.onload event in JS)
 		ui.Bind("start", func() {
 			log.Println("UI is ready")
-			trackStable(c)
+			// trackStable(c)
 		})
 
 		// Load HTML.
@@ -76,7 +76,7 @@ func (v *Views) OpenStables() error {
 	return nil
 }
 
-func trackStable(c *services.Tokens) {
+func trackStable(t chan string) {
 	pc := make(chan string, 1)
 	go func() {
 		for {
@@ -90,7 +90,7 @@ func trackStable(c *services.Tokens) {
 			if counts > 0 {
 				var wg sync.WaitGroup
 				wg.Add(counts)
-				services.StableTokens(&wg, pairs, c)
+				services.StableTokens(&wg, pairs, t)
 				wg.Wait()
 			}
 
