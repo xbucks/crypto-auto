@@ -24,6 +24,7 @@ func OnReady() {
 	mKekBrowser := systray.AddMenuItem("KEK in Browser", "Opens Google in a normal browser")
 	mDexEmbed := systray.AddMenuItem("DEX in Window", "Opens Google in a custom window")
 	mStables := systray.AddMenuItem("Stable tokens", "Find stable tokens")
+	mTradables := systray.AddMenuItem("Tradable tokens", "Find tradable tokens")
 	mSettings := systray.AddMenuItem("Settings", "Opens Google in a custom window")
 	systray.AddSeparator()
 	mQuit := systray.AddMenuItem("Quit", "Quit example tray application")
@@ -57,6 +58,11 @@ func OnReady() {
 			}
 		case <-mStables.ClickedCh:
 			err := views.Get().OpenStables()
+			if err != nil {
+				fmt.Println(err)
+			}
+		case <-mTradables.ClickedCh:
+			err := views.Get().OpenTradables()
 			if err != nil {
 				fmt.Println(err)
 			}
