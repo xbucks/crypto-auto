@@ -71,9 +71,9 @@ func tradableToken(pings <-chan string, id string, target chan string) {
 		min, max, _, _, _, _ := minMax(swaps)
 		last, _ := priceOfSwap(swaps.Data.Swaps[0])
 		_, _, period := periodOfSwaps(swaps)
-		howold := howMuchOld(swaps)
+		howOld := howMuchOld(swaps)
 
-		if (max-min)/last > 0.1 && period < 6 && howold < 24 {
+		if (max-min)/last > 0.1 && period < 6 && howOld < 24 {
 			target <- id
 		}
 	}
