@@ -8,25 +8,25 @@ import (
 	"github.com/hirokimoto/crypto-auto/utils"
 )
 
-func StableTokens(wg *sync.WaitGroup, pairs utils.Pairs) {
+func StableTokens(wg *sync.WaitGroup, pairs utils.Pairs, target chan string) {
 	defer wg.Done()
 
 	for _, item := range pairs.Data.Pairs {
 		c := make(chan string, 1)
 		go utils.Post(c, "swaps", item.Id)
 		fmt.Print(".")
-		stableToken(c, item.Id)
+		stableToken(c, item.Id, target)
 	}
 }
 
-func TradableTokens(wg *sync.WaitGroup, pairs utils.Pairs) {
+func TradableTokens(wg *sync.WaitGroup, pairs utils.Pairs, target chan string) {
 	defer wg.Done()
 
 	for _, item := range pairs.Data.Pairs {
 		c := make(chan string, 1)
 		go utils.Post(c, "swaps", item.Id)
 		fmt.Print(".")
-		tradableToken(c, item.Id)
+		tradableToken(c, item.Id, target)
 	}
 }
 
@@ -45,7 +45,7 @@ func StoreAndRemovePair(pair string) (err error) {
 	return err
 }
 
-func stableToken(pings <-chan string, id string) {
+func stableToken(pings <-chan string, id string, target chan string) {
 	var swaps utils.Swaps
 	msg := <-pings
 	json.Unmarshal([]byte(msg), &swaps)
@@ -57,12 +57,12 @@ func stableToken(pings <-chan string, id string) {
 		howold := howMuchOld(swaps)
 
 		if (max-min)/last < 0.1 && period > 24 && howold < 24 {
-			// list.Append(id)
+			target <- id
 		}
 	}
 }
 
-func tradableToken(pings <-chan string, id string) {
+func tradableToken(pings <-chan string, id string, target chan string) {
 	var swaps utils.Swaps
 	msg := <-pings
 	json.Unmarshal([]byte(msg), &swaps)
@@ -74,7 +74,7 @@ func tradableToken(pings <-chan string, id string) {
 		howold := howMuchOld(swaps)
 
 		if (max-min)/last > 0.1 && period < 6 && howold < 24 {
-			// list.Append(id)
+			target <- id
 		}
 	}
 }
