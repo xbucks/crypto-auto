@@ -33,6 +33,7 @@
 			// We use async/await because Go functions are asynchronous
 			const render = async () => {
 				const pairs = await window.getPairs();
+				console.log(pairs)
 				data.innerText = JSON.stringify(pairs);
 			};
 

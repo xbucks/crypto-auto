@@ -17,6 +17,23 @@ import (
 	"github.com/zserge/lorca"
 )
 
+type stables struct {
+	sync.Mutex
+	data []string
+}
+
+func (c *stables) Add(e string) {
+	c.Lock()
+	defer c.Unlock()
+	c.data = append(c.data, e)
+}
+
+func (c *stables) Value() []string {
+	c.Lock()
+	defer c.Unlock()
+	return c.data
+}
+
 func (v *Views) OpenStables() error {
 	v.WaitGroup.Add(1)
 	go func(wg *sync.WaitGroup) {
@@ -33,9 +50,9 @@ func (v *Views) OpenStables() error {
 		defer ui.Close()
 
 		// Create and bind Go object to the UI
-		c := &services.Tokens{}
+		c := &stables{}
 		ui.Bind("addPair", c.Add)
-		ui.Bind("getPairs", c.Get)
+		ui.Bind("getPairs", c.Value)
 
 		// A simple way to know when UI is ready (uses body.onload event in JS)
 		ui.Bind("start", func() {
@@ -43,7 +60,7 @@ func (v *Views) OpenStables() error {
 			token := make(chan services.Token, 1)
 			go trackStable(token)
 			msg := <-token
-			c.Add(msg)
+			c.Add(msg.Get())
 			fmt.Println("New token!!!!!   ", msg.Get())
 		})
 
