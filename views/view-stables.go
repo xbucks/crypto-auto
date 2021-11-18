@@ -80,7 +80,7 @@ func trackStable(c *services.Tokens) {
 	pc := make(chan string, 1)
 	go func() {
 		for {
-			utils.Post(pc, "pairs", "")
+			utils.Post(pc, "pairs", 1000, "")
 
 			msg1 := <-pc
 			var pairs utils.Pairs
