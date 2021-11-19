@@ -17,8 +17,8 @@ import (
 func OnReady() {
 	systray.SetIcon(getIcon("assets/auto.ico"))
 
-	mStart := systray.AddMenuItem("Start", "Start tracking pairs.")
-	mStop := systray.AddMenuItem("Stop", "Stop tracking pairs.")
+	mETH := systray.AddMenuItem("ETH", "Price of ethereum")
+	mBTC := systray.AddMenuItem("BTC", "Price of bitcoin")
 	systray.AddSeparator()
 	mDashboard := systray.AddMenuItem("Open Dashboard", "Opens a simple HTML Hello, World")
 	mKekBrowser := systray.AddMenuItem("KEK in Browser", "Opens Google in a normal browser")
@@ -38,9 +38,9 @@ func OnReady() {
 	for {
 		select {
 
-		case <-mStart.ClickedCh:
+		case <-mETH.ClickedCh:
 			go services.TrackStable(c)
-		case <-mStop.ClickedCh:
+		case <-mBTC.ClickedCh:
 		case <-mDashboard.ClickedCh:
 			err := views.Get().OpenIndex()
 			if err != nil {
