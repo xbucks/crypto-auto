@@ -32,7 +32,7 @@ func OnReady() {
 	sigc := make(chan os.Signal, 1)
 	signal.Notify(sigc, syscall.SIGTERM, syscall.SIGINT)
 
-	services.TracPairs()
+	services.TrackPairs()
 	c := &services.Tokens{}
 
 	for {

@@ -11,7 +11,7 @@ import (
 	"github.com/leekchan/accounting"
 )
 
-func TracPairs() {
+func TrackPairs() {
 	money := accounting.Accounting{Symbol: "$", Precision: 6}
 	pairs := []string{"0x7a99822968410431edd1ee75dab78866e31caf39"}
 	olds := []float64{0.1}
@@ -23,7 +23,7 @@ func TracPairs() {
 
 			cc := make(chan string, 1)
 			var swaps utils.Swaps
-			go TrackPairs(&wg, pairs, cc)
+			go trackPairs(&wg, pairs, cc)
 
 			ai := 0.1
 			msg := <-cc

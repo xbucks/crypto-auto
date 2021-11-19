@@ -8,7 +8,7 @@ import (
 	"github.com/hirokimoto/crypto-auto/utils"
 )
 
-func TrackPairs(wg *sync.WaitGroup, pairs []string, target chan string) {
+func trackPairs(wg *sync.WaitGroup, pairs []string, target chan string) {
 	for _, pair := range pairs {
 		defer wg.Done()
 		go utils.Post(target, "swaps", 10, pair)
