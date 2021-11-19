@@ -23,7 +23,7 @@ func TrackPairs() {
 
 			cc := make(chan string, 1)
 			var swaps utils.Swaps
-			go trackPairs(&wg, pairs, cc)
+			go trackPairs(&wg, pairs, cc, 2)
 
 			ai := 0.1
 			msg := <-cc
@@ -52,10 +52,10 @@ func TrackPairs() {
 	}()
 }
 
-func trackPairs(wg *sync.WaitGroup, pairs []string, target chan string) {
+func trackPairs(wg *sync.WaitGroup, pairs []string, target chan string, limit int) {
 	for _, pair := range pairs {
 		defer wg.Done()
-		go utils.Post(target, "swaps", 10, pair)
+		go utils.Post(target, "swaps", limit, pair)
 		fmt.Print(".")
 	}
 	time.Sleep(time.Second * 5)

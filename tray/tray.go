@@ -14,6 +14,7 @@ import (
 	"github.com/hirokimoto/crypto-auto/services"
 	"github.com/hirokimoto/crypto-auto/utils"
 	"github.com/hirokimoto/crypto-auto/views"
+	"github.com/leekchan/accounting"
 	"github.com/skratchdot/open-golang/open"
 )
 
@@ -39,7 +40,9 @@ func OnReady() {
 
 	services.TrackPairs()
 
+	money := accounting.Accounting{Symbol: "$", Precision: 2}
 	ethc := make(chan string, 1)
+	btcc := make(chan string, 1)
 
 	for {
 		select {
@@ -47,6 +50,7 @@ func OnReady() {
 		case <-mETH.ClickedCh:
 			services.TrackETH(ethc)
 		case <-mBTC.ClickedCh:
+			services.TrackBTC(btcc)
 		case <-mDashboard.ClickedCh:
 			err := views.Get().OpenIndex()
 			if err != nil {
@@ -85,6 +89,13 @@ func OnReady() {
 			price := fmt.Sprintf("$%.2f", _price)
 			mETH.SetTitle(price)
 			fmt.Println("ETH Price: ", price)
+		case <-btcc:
+			msg := <-btcc
+			var swaps utils.Swaps
+			json.Unmarshal([]byte(msg), &swaps)
+			_, p, _, _, _ := services.SwapsInfo(swaps, 0.1)
+			price := money.FormatMoney(p)
+			fmt.Println("BTC Price: ", price)
 		case <-mQuit.ClickedCh:
 			systray.Quit()
 		case <-sigc:
