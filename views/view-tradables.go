@@ -34,6 +34,9 @@ func (v *Views) OpenTradables() error {
 		ui.Bind("addPair", func(t string) {
 			fmt.Println(t)
 		})
+		ui.Bind("savePairs", func() {
+			fmt.Println("Save")
+		})
 		ui.Bind("getPairs", c.Get)
 		ui.Bind("getLength", c.GetLength)
 		ui.Bind("getItem", c.GetItem)

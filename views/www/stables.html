@@ -61,7 +61,6 @@
 					const period = await window.getItem(i, 'period')
 					const percent =  change / price
 					const row = document.getElementById(`token-${i}`)
-					console.log(percent)
 					if (!row) {
 						data.innerHTML = data.innerHTML + `
 							<div id="token-${i}" class="token">
