@@ -32,6 +32,19 @@ func OnReady() {
 	mPause := systray.AddMenuItem("Pause", "Pause background services")
 	mStop := systray.AddMenuItem("Stop", "Stop background services")
 	systray.AddSeparator()
+	mAlerts := systray.AddMenuItem("Alerts", "Alert changes")
+	mAlertsAny := mAlerts.AddSubMenuItemCheckbox("Any changes", "Alert any changes", true)
+	mAlerts10 := mAlerts.AddSubMenuItemCheckbox("> 10%"+" changes", "Alert changes than 10%", false)
+	mAlerts15 := mAlerts.AddSubMenuItemCheckbox("> 15%"+" changes", "Alert changes than 15%", false)
+	mAlerts20 := mAlerts.AddSubMenuItemCheckbox("> 20%"+" changes", "Alert changes than 20%", false)
+	mDuration := systray.AddMenuItem("Duration", "Get swaps by duration")
+	mSwapCounts_1000 := mDuration.AddSubMenuItemCheckbox("1000 swaps", "Get recent 1000 swaps", true)
+	mSwapCounts_3000 := mDuration.AddSubMenuItemCheckbox("3000 swaps", "Get recent 3000 swaps", false)
+	mSwapCounts_9000 := mDuration.AddSubMenuItemCheckbox("9000 swaps", "Get recent 9000 swaps", false)
+	mSwapDays_1 := mDuration.AddSubMenuItemCheckbox("1 day swaps", "Get recent swaps of 1 day", false)
+	mSwapDays_3 := mDuration.AddSubMenuItemCheckbox("3 day swaps", "Get recent swaps of 3 days", false)
+	mSwapDays_7 := mDuration.AddSubMenuItemCheckbox("7 day swaps", "Get recent swaps of 7 dayy", false)
+	systray.AddSeparator()
 	mRefreshPairs := systray.AddMenuItem("Refresh pairs", "Get all available pairs")
 	mTradePairs := systray.AddMenuItem("Tradable pairs", "Get all tradable pairs")
 	systray.AddSeparator()
@@ -74,6 +87,69 @@ func OnReady() {
 		case <-mStop.ClickedCh:
 			command1 <- "Stop"
 			command2 <- "Stop"
+		case <-mAlerts.ClickedCh:
+		case <-mAlertsAny.ClickedCh:
+			mAlertsAny.Check()
+			mAlerts10.Uncheck()
+			mAlerts15.Uncheck()
+			mAlerts20.Uncheck()
+		case <-mAlerts10.ClickedCh:
+			mAlertsAny.Uncheck()
+			mAlerts10.Check()
+			mAlerts15.Uncheck()
+			mAlerts20.Uncheck()
+		case <-mAlerts15.ClickedCh:
+			mAlertsAny.Uncheck()
+			mAlerts10.Uncheck()
+			mAlerts15.Check()
+			mAlerts20.Uncheck()
+		case <-mAlerts20.ClickedCh:
+			mAlertsAny.Uncheck()
+			mAlerts10.Uncheck()
+			mAlerts15.Uncheck()
+			mAlerts20.Check()
+		case <-mSwapCounts_1000.ClickedCh:
+			mSwapCounts_1000.Check()
+			mSwapCounts_3000.Uncheck()
+			mSwapCounts_9000.Uncheck()
+			mSwapDays_1.Uncheck()
+			mSwapDays_3.Uncheck()
+			mSwapDays_7.Uncheck()
+		case <-mSwapCounts_3000.ClickedCh:
+			mSwapCounts_1000.Uncheck()
+			mSwapCounts_3000.Check()
+			mSwapCounts_9000.Uncheck()
+			mSwapDays_1.Uncheck()
+			mSwapDays_3.Uncheck()
+			mSwapDays_7.Uncheck()
+		case <-mSwapCounts_9000.ClickedCh:
+			mSwapCounts_1000.Uncheck()
+			mSwapCounts_3000.Uncheck()
+			mSwapCounts_9000.Check()
+			mSwapDays_1.Uncheck()
+			mSwapDays_3.Uncheck()
+			mSwapDays_7.Uncheck()
+		case <-mSwapDays_1.ClickedCh:
+			mSwapCounts_1000.Uncheck()
+			mSwapCounts_3000.Uncheck()
+			mSwapCounts_9000.Uncheck()
+			mSwapDays_1.Check()
+			mSwapDays_3.Uncheck()
+			mSwapDays_7.Uncheck()
+		case <-mSwapDays_3.ClickedCh:
+			mSwapCounts_1000.Uncheck()
+			mSwapCounts_3000.Uncheck()
+			mSwapCounts_9000.Uncheck()
+			mSwapDays_1.Uncheck()
+			mSwapDays_3.Check()
+			mSwapDays_7.Uncheck()
+		case <-mSwapDays_7.ClickedCh:
+			mSwapCounts_1000.Uncheck()
+			mSwapCounts_3000.Uncheck()
+			mSwapCounts_9000.Uncheck()
+			mSwapDays_1.Uncheck()
+			mSwapDays_3.Uncheck()
+			mSwapDays_7.Check()
 		case <-mRefreshPairs.ClickedCh:
 			services.GetAllPairs(pirc)
 		case <-mTradePairs.ClickedCh:
