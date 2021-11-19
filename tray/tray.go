@@ -33,6 +33,7 @@ func OnReady() {
 	mStop := systray.AddMenuItem("Stop", "Stop background services")
 	systray.AddSeparator()
 	mRefreshPairs := systray.AddMenuItem("Refresh pairs", "Get all available pairs")
+	mTradablePairs := systray.AddMenuItem("Tradable pairs", "Get all tradable pairs")
 	systray.AddSeparator()
 	mDashboard := systray.AddMenuItem("Open Dashboard", "Opens a simple HTML Hello, World")
 	mKekBrowser := systray.AddMenuItem("KEK in Browser", "Opens Google in a normal browser")
@@ -69,6 +70,8 @@ func OnReady() {
 			command <- "Stop"
 		case <-mRefreshPairs.ClickedCh:
 			services.GetAllPairs(pirc)
+		case <-mTradablePairs.ClickedCh:
+			go services.TradablePairs(command)
 		case <-mDashboard.ClickedCh:
 			err := views.Get().OpenIndex()
 			if err != nil {

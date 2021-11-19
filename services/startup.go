@@ -28,14 +28,14 @@ func Startup(command <-chan string) {
 			}
 		default:
 			if status == "Play" {
-				work()
+				trackMainPair()
 			}
 		}
 		time.Sleep(1 * time.Second)
 	}
 }
 
-func work() {
+func trackMainPair() {
 	money := accounting.Accounting{Symbol: "$", Precision: 6}
 	cc := make(chan string, 1)
 	var swaps utils.Swaps
