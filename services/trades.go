@@ -34,7 +34,7 @@ func TradePairs(command <-chan string, progress chan<- int, t *Tokens) {
 
 func trackPair(pair string, index int, t *Tokens) {
 	ch := make(chan string, 1)
-	go utils.Post(ch, "swaps", 1000, 0, pair)
+	go utils.SwapsByCounts(ch, 1000, pair)
 
 	msg := <-ch
 	var swaps utils.Swaps
