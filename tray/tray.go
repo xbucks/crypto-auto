@@ -30,6 +30,8 @@ func OnReady() {
 	mStart := systray.AddMenuItem("Start", "Start background tracker to find tradable tokens")
 	mStop := systray.AddMenuItem("Stop", "Stop background tracker to find tradable tokens")
 	systray.AddSeparator()
+	mRefreshPairs := systray.AddMenuItem("Refresh pairs", "Get all available pairs")
+	systray.AddSeparator()
 	mDashboard := systray.AddMenuItem("Open Dashboard", "Opens a simple HTML Hello, World")
 	mKekBrowser := systray.AddMenuItem("KEK in Browser", "Opens Google in a normal browser")
 	mDexEmbed := systray.AddMenuItem("DEX in Window", "Opens Google in a custom window")
@@ -42,12 +44,12 @@ func OnReady() {
 	sigc := make(chan os.Signal, 1)
 	signal.Notify(sigc, syscall.SIGTERM, syscall.SIGINT)
 
-	// services.TrackPairs()
-	services.GetAllPairs()
+	services.TrackPairs()
 
 	money := accounting.Accounting{Symbol: "$", Precision: 2}
 	ethc := make(chan string, 1)
 	btcc := make(chan string, 1)
+	pirc := make(chan int, 1)
 
 	for {
 		select {
@@ -57,7 +59,10 @@ func OnReady() {
 		case <-mBTC.ClickedCh:
 			services.TrackBTC(btcc)
 		case <-mStart.ClickedCh:
+			services.GetAllPairs(pirc)
 		case <-mStop.ClickedCh:
+		case <-mRefreshPairs.ClickedCh:
+			services.GetAllPairs(pirc)
 		case <-mDashboard.ClickedCh:
 			err := views.Get().OpenIndex()
 			if err != nil {
@@ -103,6 +108,9 @@ func OnReady() {
 			_, p, _, _, _ := services.SwapsInfo(swaps, 0.1)
 			price := money.FormatMoney(p)
 			fmt.Println("BTC Price: ", price)
+		case <-pirc:
+			msg := <-pirc
+			mRefreshPairs.SetTitle(fmt.Sprintf("Refreshing pairs %d...", msg))
 		case <-mQuit.ClickedCh:
 			systray.Quit()
 		case <-sigc:

@@ -52,13 +52,13 @@ func TrackPairs() {
 	}()
 }
 
-func GetAllPairs() {
+func GetAllPairs(target chan int) {
 	skip := 0
 	go func() {
 		for {
-			target := make(chan string, 1)
-			go utils.Post(target, "pairs", 1000, 0, "")
-			msg := <-target
+			cc := make(chan string, 1)
+			go utils.Post(cc, "pairs", 1000, 0, "")
+			msg := <-cc
 			var pairs utils.Pairs
 			json.Unmarshal([]byte(msg), &pairs)
 			counts := len(pairs.Data.Pairs)
@@ -68,6 +68,7 @@ func GetAllPairs() {
 			}
 			SaveAllPairs(&pairs)
 			skip += 1
+			target <- skip
 		}
 	}()
 }
