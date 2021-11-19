@@ -68,7 +68,7 @@ func tradableToken(pings chan string, id string, t *Tokens) {
 		min, max, _, _, _, _ := minMax(swaps)
 		howOld := howMuchOld(swaps)
 
-		if (max-min)/price > 0.1 && period < 6 && howOld < 24 && price > 0.0001 {
+		if (max-min)/price > 0.1 && period < 24*3 && howOld < 24 && price > 0.0001 {
 			ct := &Token{
 				name:    name,
 				address: id,
