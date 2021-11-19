@@ -65,11 +65,14 @@
 						data.innerHTML = data.innerHTML + `
 							<div id="token-${i}" class="token">
 								<span class="name">${name}</span>
-								<span class="address">${address}</span>
+								<a
+									class="address"
+									href="https://www.dextools.io/app/ether/pair-explorer/${address}"
+								>${address}</a>
 								<span class="price">${price}$</span>
 								<span class="max">${max}$</span>
 								<span class="min">${min}$</span>
-								<span class="change">${change}$/${percent}%</span>
+								<span class="change">${change}$ / ${percent}%</span>
 								<span class="period">${period} hours</span>
 								<div id="${address}" class="btn">+/-</div>
 							</div>
