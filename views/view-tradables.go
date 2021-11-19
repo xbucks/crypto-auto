@@ -14,7 +14,7 @@ import (
 	"github.com/zserge/lorca"
 )
 
-func (v *Views) OpenTradables() error {
+func (v *Views) OpenTradables(tks *services.Tokens) error {
 	v.WaitGroup.Add(1)
 	go func(wg *sync.WaitGroup) {
 		defer wg.Done()
@@ -30,17 +30,16 @@ func (v *Views) OpenTradables() error {
 		defer ui.Close()
 
 		// Create and bind Go object to the UI
-		c := &services.Tokens{}
 		ui.Bind("addPair", func(t string) {
 			fmt.Println(t)
 		})
 		ui.Bind("savePairs", func() {
-			services.SaveTradables(c)
+			services.SaveTradables(tks)
 		})
-		ui.Bind("getPairs", c.Get)
-		ui.Bind("getLength", c.GetLength)
-		ui.Bind("getItem", c.GetItem)
-		ui.Bind("getProgress", c.GetProgress)
+		ui.Bind("getPairs", tks.Get)
+		ui.Bind("getLength", tks.GetLength)
+		ui.Bind("getItem", tks.GetItem)
+		ui.Bind("getProgress", tks.GetProgress)
 
 		// A simple way to know when UI is ready (uses body.onload event in JS)
 		ui.Bind("start", func() {

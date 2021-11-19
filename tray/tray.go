@@ -100,7 +100,7 @@ func OnReady() {
 				fmt.Println(err)
 			}
 		case <-mTradables.ClickedCh:
-			err := views.Get().OpenTradables()
+			err := views.Get().OpenTradables(tt)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -129,6 +129,12 @@ func OnReady() {
 			mRefreshPairs.SetTitle(fmt.Sprintf("Refreshing pairs %d...", msg))
 		case <-progress2:
 			mTradablePairs.SetTitle(fmt.Sprintf("Tradable pairs %d/%d", tt.GetProgress(), tt.GetTotal()))
+			if tt.GetTotal() == tt.GetProgress() {
+				err := views.Get().OpenTradables(tt)
+				if err != nil {
+					fmt.Println(err)
+				}
+			}
 		case <-mQuit.ClickedCh:
 			systray.Quit()
 		case <-sigc:

@@ -10,6 +10,9 @@
 		.counter { text-transform: uppercase; color: #fff; font-weight: bold; font-size: 3rem; }
 		.controls { display: flex; align-items: center; justify-content: space-between; min-width: 400px; }
 		.progress { text-transform: uppercase; color: #fff; font-weight: bold; font-size: 2rem; width: 100px; margin: 0 20px; }
+		.sync { cursor: pointer; padding: 1em; border-radius: 5px; text-align: center; box-shadow: 0 6px #8b5e00; color: white; background-color: #E4B702; position: relative; font-weight: bold; }
+		.sync:hover { box-shadow: 0 4px #8b5e00; top: 2px; }
+		.sync:active{ box-shadow: 0 1px #8b5e00; top: 5px; }
 		.save { cursor: pointer; padding: 1em; border-radius: 5px; text-align: center; box-shadow: 0 6px #8b5e00; color: white; background-color: #E4B702; position: relative; font-weight: bold; }
 		.save:hover { box-shadow: 0 4px #8b5e00; top: 2px; }
 		.save:active{ box-shadow: 0 1px #8b5e00; top: 5px; }
@@ -33,6 +36,7 @@
 			<div class="counter">Tradable tokens</div>
 			<div class="controls">
 				<div class="progress"></div>
+				<div class="sync">Sync</div>
 				<div class="save">Save</div>
 			</div>
 			<div class="tokens">
@@ -53,6 +57,7 @@
 			const data = document.querySelector('.tokens');
 			const progress = document.querySelector('.progress');
 			const save = document.querySelector('.save');
+			const sync = document.querySelector('.sync');
 
 			// We use async/await because Go functions are asynchronous
 			const render = async () => {
@@ -100,10 +105,9 @@
 			save.addEventListener('click', async () => {
 				await savePairs();
 			});
-
-			setInterval(function () {
+			sync.addEventListener('click', async () => {
 				render();
-			}, 1000);
+			});
 		</script>
 	</body>
 </html>
