@@ -12,21 +12,16 @@ import (
 )
 
 func TrackPairs() {
-	money := accounting.Accounting{Symbol: "$", Precision: 6}
-	pairs := []string{"0x7a99822968410431edd1ee75dab78866e31caf39"}
-	olds := []float64{0.1}
-
 	go func() {
+		money := accounting.Accounting{Symbol: "$", Precision: 6}
+		olds := []float64{0.1}
 		for {
-			var wg sync.WaitGroup
-			wg.Add(len(pairs))
-
 			cc := make(chan string, 1)
 			var swaps utils.Swaps
-			go trackPairs(&wg, pairs, cc, 2)
+			go utils.Post(cc, "swaps", 2, 0, "0x7a99822968410431edd1ee75dab78866e31caf39")
 
-			ai := 0.1
 			msg := <-cc
+			ai := 0.1
 			json.Unmarshal([]byte(msg), &swaps)
 			n, p, c, d, a := SwapsInfo(swaps, ai)
 
@@ -47,7 +42,6 @@ func TrackPairs() {
 			olds[0] = p
 
 			time.Sleep(1 * time.Second)
-			wg.Wait()
 		}
 	}()
 }

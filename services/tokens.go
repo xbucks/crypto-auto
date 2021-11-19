@@ -1,7 +1,6 @@
 package services
 
 import (
-	"sync"
 	"time"
 
 	"github.com/hirokimoto/crypto-auto/utils"
@@ -17,14 +16,9 @@ func TrackETH(target chan string) {
 }
 
 func TrackBTC(target chan string) {
-	pairs := []string{"0xec454eda10accdd66209c57af8c12924556f3abd"}
-
 	go func() {
 		for {
-			var wg sync.WaitGroup
-			wg.Add(len(pairs))
-			go trackPairs(&wg, pairs, target, 2)
-			wg.Wait()
+			go utils.Post(target, "swaps", 2, 0, "0xec454eda10accdd66209c57af8c12924556f3abd")
 			time.Sleep(1 * time.Second)
 		}
 	}()
