@@ -16,6 +16,7 @@ func request(query map[string]string, target chan string) {
 	response, err := client.Do(request)
 	if err != nil {
 		fmt.Printf("The HTTP request failed with error %s\n", err)
+		target <- ""
 		return
 	}
 	defer response.Body.Close()
