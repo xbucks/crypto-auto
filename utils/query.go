@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-type Crypto struct {
+type Bundles struct {
 	Data struct {
 		Bundles []struct {
 			EthPrice string `json:"ethPrice"`

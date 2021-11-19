@@ -1,6 +1,7 @@
 package tray
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 
@@ -10,6 +11,7 @@ import (
 
 	"github.com/getlantern/systray"
 	"github.com/hirokimoto/crypto-auto/services"
+	"github.com/hirokimoto/crypto-auto/utils"
 	"github.com/hirokimoto/crypto-auto/views"
 	"github.com/skratchdot/open-golang/open"
 )
@@ -34,13 +36,13 @@ func OnReady() {
 
 	services.TrackPairs()
 
-	eth := make(chan string, 1)
+	ethc := make(chan string, 1)
 
 	for {
 		select {
 
 		case <-mETH.ClickedCh:
-			services.TrackETH(eth)
+			services.TrackETH(ethc)
 		case <-mBTC.ClickedCh:
 		case <-mDashboard.ClickedCh:
 			err := views.Get().OpenIndex()
@@ -72,9 +74,11 @@ func OnReady() {
 			if err != nil {
 				fmt.Println(err)
 			}
-		case <-eth:
-			msg := <-eth
-			fmt.Println(msg)
+		case <-ethc:
+			msg := <-ethc
+			var eth utils.Bundles
+			json.Unmarshal([]byte(msg), &eth)
+			fmt.Println(eth.Data.Bundles[0].EthPrice)
 		case <-mQuit.ClickedCh:
 			systray.Quit()
 		case <-sigc:
