@@ -8,12 +8,13 @@ import (
 	"github.com/hirokimoto/crypto-auto/utils"
 )
 
-func StableTokens(wg *sync.WaitGroup, pairs utils.Pairs, t *Tokens) {
-	for index, item := range pairs.Data.Pairs {
+func StableTokens(wg *sync.WaitGroup, t *Tokens) {
+	pairs, _ := ReadAllPairs()
+	for index, item := range pairs {
 		defer wg.Done()
 		cc := make(chan string, 1)
-		go utils.Post(cc, "swaps", 1000, 0, item.Id)
-		stableToken(cc, item.Id, t)
+		go utils.Post(cc, "swaps", 1000, 0, item)
+		stableToken(cc, item, t)
 		t.SetProgress(index)
 		fmt.Print(".")
 	}

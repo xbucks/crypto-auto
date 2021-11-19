@@ -9,9 +9,9 @@ import (
 )
 
 func TradableTokens(wg *sync.WaitGroup, t *Tokens) {
-	defer wg.Done()
 	pairs, _ := ReadAllPairs()
 	for index, item := range pairs {
+		defer wg.Done()
 		cc := make(chan string, 1)
 		go utils.Post(cc, "swaps", 1000, 0, item)
 		tradableToken(cc, item, t)
