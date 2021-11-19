@@ -99,7 +99,7 @@ func StableTokens(wg *sync.WaitGroup, pairs utils.Pairs, t *Tokens) {
 		cc := make(chan string, 1)
 		go utils.Post(cc, "swaps", 1000, item.Id)
 		stableToken(cc, item.Id, t)
-		t.SetProgress(float64(index / 1000))
+		t.SetProgress(index)
 		fmt.Print(".")
 	}
 }
@@ -111,7 +111,7 @@ func TradableTokens(wg *sync.WaitGroup, pairs utils.Pairs, t *Tokens) {
 		cc := make(chan string, 1)
 		go utils.Post(cc, "swaps", 1000, item.Id)
 		tradableToken(cc, item.Id, t)
-		t.SetProgress(float64(index / 1000))
+		t.SetProgress(index)
 		fmt.Print(".")
 	}
 }

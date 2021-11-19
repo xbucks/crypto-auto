@@ -37,6 +37,7 @@ func (v *Views) OpenStables() error {
 		ui.Bind("getPairs", c.Get)
 		ui.Bind("getLength", c.GetLength)
 		ui.Bind("getItem", c.GetItem)
+		ui.Bind("getProgress", c.GetProgress)
 
 		// A simple way to know when UI is ready (uses body.onload event in JS)
 		ui.Bind("start", func() {

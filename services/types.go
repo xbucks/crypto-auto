@@ -25,7 +25,7 @@ func (c *Token) Get() string {
 type Tokens struct {
 	sync.Mutex
 	data     []Token
-	progress float64
+	progress int
 }
 
 func (c *Tokens) Add(pair *Token) {
@@ -55,13 +55,13 @@ func (c *Tokens) GetLength() int {
 	return length
 }
 
-func (c *Tokens) GetProgress() float64 {
+func (c *Tokens) GetProgress() int {
 	c.Lock()
 	defer c.Unlock()
 	return c.progress
 }
 
-func (c *Tokens) SetProgress(p float64) {
+func (c *Tokens) SetProgress(p int) {
 	c.Lock()
 	defer c.Unlock()
 	c.progress = p
