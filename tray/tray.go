@@ -33,13 +33,14 @@ func OnReady() {
 	signal.Notify(sigc, syscall.SIGTERM, syscall.SIGINT)
 
 	services.TrackPairs()
-	c := &services.Tokens{}
+
+	eth := make(chan string, 1)
 
 	for {
 		select {
 
 		case <-mETH.ClickedCh:
-			go services.TrackStable(c)
+			services.TrackETH(eth)
 		case <-mBTC.ClickedCh:
 		case <-mDashboard.ClickedCh:
 			err := views.Get().OpenIndex()
@@ -71,6 +72,9 @@ func OnReady() {
 			if err != nil {
 				fmt.Println(err)
 			}
+		case <-eth:
+			msg := <-eth
+			fmt.Println(msg)
 		case <-mQuit.ClickedCh:
 			systray.Quit()
 		case <-sigc:
