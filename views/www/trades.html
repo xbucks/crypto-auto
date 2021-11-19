@@ -16,7 +16,7 @@
 		.max { width: 100px; }
 		.min { width: 100px; }
 		.price { width: 100px; }
-		.change { width: 100px; }
+		.change { width: 200px; }
 		.period { width: 100px; }
 		.btn { cursor: pointer; padding: 1em; border-radius: 5px; text-align: center; box-shadow: 0 6px #8b5e00; color: white; background-color: #E4B702; position: relative; font-weight: bold; }
 		.btn:hover { box-shadow: 0 4px #8b5e00; top: 2px; }
@@ -59,6 +59,7 @@
 					const min = await window.getItem(i, 'min')
 					const change = await window.getItem(i, 'change')
 					const period = await window.getItem(i, 'period')
+					const percent =  Math.round(100 * change / price, 2)
 					const row = document.getElementById(`token-${i}`)
 					if (!row) {
 						data.innerHTML = data.innerHTML + `
@@ -68,7 +69,7 @@
 								<span class="price">${price}$</span>
 								<span class="max">${max}$</span>
 								<span class="min">${min}$</span>
-								<span class="change">${change}$</span>
+								<span class="change">${change}$/${percent}%</span>
 								<span class="period">${period} hours</span>
 								<div id="${address}" class="btn">+/-</div>
 							</div>
