@@ -94,23 +94,25 @@ func TrackTradable(t *Tokens) {
 }
 
 func StableTokens(wg *sync.WaitGroup, pairs utils.Pairs, t *Tokens) {
-	for _, item := range pairs.Data.Pairs {
+	for index, item := range pairs.Data.Pairs {
 		defer wg.Done()
 		cc := make(chan string, 1)
 		go utils.Post(cc, "swaps", 1000, item.Id)
-		fmt.Print(".")
 		stableToken(cc, item.Id, t)
+		t.SetProgress(float64(index / 1000))
+		fmt.Print(".")
 	}
 }
 
 func TradableTokens(wg *sync.WaitGroup, pairs utils.Pairs, t *Tokens) {
 	defer wg.Done()
 
-	for _, item := range pairs.Data.Pairs {
+	for index, item := range pairs.Data.Pairs {
 		cc := make(chan string, 1)
 		go utils.Post(cc, "swaps", 1000, item.Id)
-		fmt.Print(".")
 		tradableToken(cc, item.Id, t)
+		t.SetProgress(float64(index / 1000))
+		fmt.Print(".")
 	}
 }
 
@@ -141,7 +143,7 @@ func stableToken(pings chan string, id string, t *Tokens) {
 		howOld := howMuchOld(swaps)
 
 		if (max-min)/price < 0.1 && period > 24 && howOld < 24 {
-			ct := Token{
+			ct := &Token{
 				name:    name,
 				address: id,
 				price:   fmt.Sprintf("%f", price),
@@ -168,7 +170,7 @@ func tradableToken(pings chan string, id string, t *Tokens) {
 		howOld := howMuchOld(swaps)
 
 		if (max-min)/price > 0.1 && period < 6 && howOld < 24 && price > 0.0001 {
-			ct := Token{
+			ct := &Token{
 				name:    name,
 				address: id,
 				price:   fmt.Sprintf("%f", price),
