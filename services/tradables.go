@@ -11,9 +11,8 @@ import (
 
 func TradablePairs(command <-chan string) {
 	pairs, _ := ReadAllPairs()
-	fmt.Println(pairs)
 	var status = "Play"
-	for _, pair := range pairs {
+	for index, pair := range pairs {
 		select {
 		case cmd := <-command:
 			fmt.Println(cmd)
@@ -27,14 +26,14 @@ func TradablePairs(command <-chan string) {
 			}
 		default:
 			if status == "Play" {
-				trackPair(pair)
+				trackPair(pair, index)
 			}
 		}
 		time.Sleep(1 * time.Second)
 	}
 }
 
-func trackPair(pair string) {
+func trackPair(pair string, index int) {
 	cc := make(chan string, 1)
 	go utils.Post(cc, "swaps", 1000, 0, pair)
 
@@ -52,7 +51,7 @@ func trackPair(pair string) {
 			fmt.Println("Tradable token !!!!!   ", name, price, change, period)
 		}
 	}
-	fmt.Print(".")
+	fmt.Print(index, "|")
 }
 
 func TradableTokens(wg *sync.WaitGroup, t *Tokens) {

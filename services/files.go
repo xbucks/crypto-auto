@@ -38,11 +38,7 @@ func isExistedTradables(t string, trades []string) bool {
 
 func SaveAllPairs(p *utils.Pairs) {
 	path := absolutePath() + ALL_PAIRS
-	pairs, err := readLines(path)
-
-	if err != nil {
-		return
-	}
+	pairs, _ := readLines(path)
 
 	for _, v := range p.Data.Pairs {
 		if !isExistedPairs(v.Id, pairs) {
@@ -102,22 +98,25 @@ func removeOnePair(pair string) error {
 }
 
 func absolutePath() string {
-	ex, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-	exPath := filepath.Dir(ex)
-	return exPath
+	// ex, err := os.Getwd()
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// exPath := filepath.Dir(ex)
+	// return exPath
+	dir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
+	return dir
 }
 
 func readLines(path string) ([]string, error) {
+	var lines []string
 	file, err := os.Open(path)
 	if err != nil {
-		return nil, err
+		writeLines(lines, path)
+		return lines, nil
 	}
 	defer file.Close()
 
-	var lines []string
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		lines = append(lines, scanner.Text())
