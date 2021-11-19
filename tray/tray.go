@@ -42,7 +42,8 @@ func OnReady() {
 	sigc := make(chan os.Signal, 1)
 	signal.Notify(sigc, syscall.SIGTERM, syscall.SIGINT)
 
-	services.TrackPairs()
+	// services.TrackPairs()
+	services.GetAllPairs()
 
 	money := accounting.Accounting{Symbol: "$", Precision: 2}
 	ethc := make(chan string, 1)
