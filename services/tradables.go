@@ -4,31 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"sync"
-	"time"
 
 	"github.com/hirokimoto/crypto-auto/utils"
 )
-
-func TrackTradable(t *Tokens) {
-	pc := make(chan string, 1)
-	for {
-		go utils.Post(pc, "pairs", 1000, 0, "")
-
-		msg1 := <-pc
-		var pairs utils.Pairs
-		json.Unmarshal([]byte(msg1), &pairs)
-		counts := len(pairs.Data.Pairs)
-		fmt.Println("Counts of Pairs: ", counts)
-		if counts > 0 {
-			var wg sync.WaitGroup
-			wg.Add(counts)
-			TradableTokens(&wg, pairs, t)
-			wg.Wait()
-		}
-
-		time.Sleep(time.Minute * 10)
-	}
-}
 
 func TradableTokens(wg *sync.WaitGroup, pairs utils.Pairs, t *Tokens) {
 	defer wg.Done()
