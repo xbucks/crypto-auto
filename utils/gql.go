@@ -31,7 +31,7 @@ func Post(target chan string, to string, limit int, skip int, id string) {
 	request(query, target)
 }
 
-func SwapsByDay(target chan string, limit int, id string) {
+func SwapsByDays(target chan string, limit int, id string) {
 	var results Swaps
 	var temp Swaps
 	i := 0
