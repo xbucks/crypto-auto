@@ -69,6 +69,7 @@ func trackPair(pair string, index int, t *Tokens) {
 				min:     fmt.Sprintf("%f", min),
 				max:     fmt.Sprintf("%f", max),
 				period:  fmt.Sprintf("%.2f", period),
+				swaps:   swaps.Data.Swaps,
 			}
 			t.Add(ct)
 		}

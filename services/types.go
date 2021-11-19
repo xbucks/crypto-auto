@@ -3,11 +3,13 @@ package services
 import (
 	"reflect"
 	"sync"
+
+	"github.com/hirokimoto/crypto-auto/utils"
 )
 
 type Token struct {
 	sync.Mutex
-	target  string
+	target  string // unstable, stable, trending
 	name    string
 	address string
 	price   string
@@ -15,6 +17,7 @@ type Token struct {
 	min     string
 	max     string
 	period  string
+	swaps   []utils.Swap
 }
 
 func (c *Token) Get() string {
