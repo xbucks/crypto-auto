@@ -42,7 +42,6 @@ func (v *Views) OpenStables() error {
 		// A simple way to know when UI is ready (uses body.onload event in JS)
 		ui.Bind("start", func() {
 			log.Println("UI is ready")
-			services.TrackStable(c)
 		})
 
 		// Load HTML.
