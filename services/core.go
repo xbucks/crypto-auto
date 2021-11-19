@@ -9,14 +9,44 @@ import (
 	gosxnotifier "github.com/deckarep/gosx-notifier"
 )
 
+const TRADES_TARGET string = "/trades.txt"
+
 func Notify(title string, message string, link string) {
-	// logo := canvas.NewImageFromResource(data.FyneScene)
 	note := gosxnotifier.NewNotification(message)
 	note.Title = title
 	note.Sound = gosxnotifier.Default
 	note.Link = link
-	// note.AppIcon = logo.Resource.Name()
 	note.Push()
+}
+
+func SaveTradables(tokens *Tokens) {
+	trades := readTradables()
+	for _, v := range tokens.data {
+		if !IsExistedTrade(v.address) {
+			trades = append(trades, v.address)
+		}
+	}
+	writeLines(trades, TRADES_TARGET)
+	fmt.Println("Saved tradable tokens successfully!")
+}
+
+func IsExistedTrade(t string) bool {
+	trades := readTradables()
+	for _, v := range trades {
+		if v == t {
+			return true
+		}
+	}
+	return false
+}
+
+func readTradables() []string {
+	path := absolutePath() + TRADES_TARGET
+	tradables, err := readLines(path)
+	if err != nil {
+		return nil
+	}
+	return tradables
 }
 
 func ReadPairs() []string {
@@ -61,6 +91,29 @@ func InitializePairs() {
 	writeLines(lines, path)
 }
 
+func writeOnePair(pair string) error {
+	path := absolutePath() + "/pairs.txt"
+	pairs, _ := readLines(path)
+	pairs = append(pairs, pair)
+	err := writeLines(pairs, path)
+	return err
+}
+
+func removeOnePair(pair string) error {
+	path := absolutePath() + "/pairs.txt"
+	pairs, _ := readLines(path)
+	_pairs := []string{}
+	for _, v := range pairs {
+		if v != pair {
+			_pairs = append(_pairs, v)
+		}
+	}
+	fmt.Println(pairs)
+	fmt.Println(_pairs)
+	err := writeLines(_pairs, path)
+	return err
+}
+
 func absolutePath() string {
 	ex, err := os.Getwd()
 	if err != nil {
@@ -99,25 +152,10 @@ func writeLines(lines []string, path string) error {
 	return w.Flush()
 }
 
-func writeOnePair(pair string) error {
-	path := absolutePath() + "/pairs.txt"
-	pairs, _ := readLines(path)
-	pairs = append(pairs, pair)
-	err := writeLines(pairs, path)
-	return err
-}
-
-func removeOnePair(pair string) error {
-	path := absolutePath() + "/pairs.txt"
-	pairs, _ := readLines(path)
-	_pairs := []string{}
-	for _, v := range pairs {
-		if v != pair {
-			_pairs = append(_pairs, v)
-		}
+func fileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
 	}
-	fmt.Println(pairs)
-	fmt.Println(_pairs)
-	err := writeLines(_pairs, path)
-	return err
+	return !info.IsDir()
 }

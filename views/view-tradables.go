@@ -23,7 +23,7 @@ func (v *Views) OpenTradables() error {
 		if runtime.GOOS == "linux" {
 			args = append(args, "--class=Lorca")
 		}
-		ui, err := lorca.New("", "", 480, 320, args...)
+		ui, err := lorca.New("", "", 1200, 600, args...)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -35,7 +35,7 @@ func (v *Views) OpenTradables() error {
 			fmt.Println(t)
 		})
 		ui.Bind("savePairs", func() {
-			fmt.Println("Save")
+			services.SaveTradables(c)
 		})
 		ui.Bind("getPairs", c.Get)
 		ui.Bind("getLength", c.GetLength)
