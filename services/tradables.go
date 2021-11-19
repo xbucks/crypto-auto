@@ -3,7 +3,6 @@ package services
 import (
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/hirokimoto/crypto-auto/utils"
 )
@@ -29,7 +28,6 @@ func TradablePairs(command <-chan string, progress chan<- int, t *Tokens) {
 				trackPair(pair, index, t)
 			}
 		}
-		time.Sleep(1 * time.Second)
 		progress <- index
 	}
 }
@@ -60,6 +58,7 @@ func trackPair(pair string, index int, t *Tokens) {
 				period:  fmt.Sprintf("%.2f", period),
 			}
 			t.Add(ct)
+			Notify("Tradable token!", fmt.Sprintf("%s %f %f", name, price, change), "https://kek.tools/")
 		}
 	}
 	t.SetProgress(index)
