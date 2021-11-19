@@ -19,6 +19,7 @@ import (
 )
 
 func OnReady() {
+	systray.SetTitle("Auto")
 	systray.SetIcon(getIcon("assets/auto.ico"))
 
 	mETH := systray.AddMenuItem("ETH", "Price of ethereum")
@@ -27,8 +28,9 @@ func OnReady() {
 	mBTC.SetIcon(getIcon("assets/btc.ico"))
 	mBTC.Disable()
 	systray.AddSeparator()
-	mStart := systray.AddMenuItem("Start", "Start background tracker to find tradable tokens")
-	mStop := systray.AddMenuItem("Stop", "Stop background tracker to find tradable tokens")
+	mStart := systray.AddMenuItem("Start", "Start background services")
+	mPause := systray.AddMenuItem("Pause", "Pause background services")
+	mStop := systray.AddMenuItem("Stop", "Stop background services")
 	systray.AddSeparator()
 	mRefreshPairs := systray.AddMenuItem("Refresh pairs", "Get all available pairs")
 	systray.AddSeparator()
@@ -49,7 +51,8 @@ func OnReady() {
 	btcc := make(chan string, 1)
 	pirc := make(chan int, 1)
 
-	services.Startup()
+	command := make(chan string)
+	go services.Startup(command)
 
 	for {
 		select {
@@ -59,9 +62,11 @@ func OnReady() {
 		case <-mBTC.ClickedCh:
 			services.TrackBTC(btcc)
 		case <-mStart.ClickedCh:
-			services.GetAllPairs(pirc)
+			command <- "Play"
+		case <-mPause.ClickedCh:
+			command <- "Pause"
 		case <-mStop.ClickedCh:
-			// quit <- true
+			command <- "Stop"
 		case <-mRefreshPairs.ClickedCh:
 			services.GetAllPairs(pirc)
 		case <-mDashboard.ClickedCh:
