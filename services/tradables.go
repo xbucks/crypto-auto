@@ -8,7 +8,7 @@ import (
 	"github.com/hirokimoto/crypto-auto/utils"
 )
 
-func TradablePairs(command <-chan string, t *Tokens) {
+func TradablePairs(command <-chan string, progress chan<- int, t *Tokens) {
 	pairs, _ := ReadAllPairs()
 	t.SetTotal(len(pairs))
 	var status = "Play"
@@ -30,6 +30,7 @@ func TradablePairs(command <-chan string, t *Tokens) {
 			}
 		}
 		time.Sleep(1 * time.Second)
+		progress <- index
 	}
 }
 

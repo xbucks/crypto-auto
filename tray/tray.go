@@ -53,7 +53,10 @@ func OnReady() {
 	pirc := make(chan int, 1)
 
 	command := make(chan string)
+	progress := make(chan int)
 	go services.Startup(command)
+
+	tt := &services.Tokens{}
 
 	for {
 		select {
@@ -71,8 +74,7 @@ func OnReady() {
 		case <-mRefreshPairs.ClickedCh:
 			services.GetAllPairs(pirc)
 		case <-mTradablePairs.ClickedCh:
-			t := &services.Tokens{}
-			go services.TradablePairs(command, t)
+			go services.TradablePairs(command, progress, tt)
 		case <-mDashboard.ClickedCh:
 			err := views.Get().OpenIndex()
 			if err != nil {
@@ -121,6 +123,8 @@ func OnReady() {
 		case <-pirc:
 			msg := <-pirc
 			mRefreshPairs.SetTitle(fmt.Sprintf("Refreshing pairs %d...", msg))
+		case <-progress:
+			mTradablePairs.SetTitle(fmt.Sprintf("Tradable pairs %d/%d", tt.GetProgress(), tt.GetTotal()))
 		case <-mQuit.ClickedCh:
 			systray.Quit()
 		case <-sigc:
