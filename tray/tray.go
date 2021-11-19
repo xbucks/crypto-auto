@@ -45,8 +45,10 @@ func OnReady() {
 	mSwapDays_3 := mDuration.AddSubMenuItemCheckbox("3 day swaps", "Get recent swaps of 3 days", false)
 	mSwapDays_7 := mDuration.AddSubMenuItemCheckbox("7 day swaps", "Get recent swaps of 7 dayy", false)
 	systray.AddSeparator()
-	mRefreshPairs := systray.AddMenuItem("Refresh pairs", "Get all available pairs")
-	mTradePairs := systray.AddMenuItem("Tradable pairs", "Get all tradable pairs")
+	mRefreshPairs := systray.AddMenuItem("Refresh pairs", "Refresh pairs list")
+	mTrendingPairs := systray.AddMenuItem("Trending pairs", "Get all trending pairs")
+	mUnStablePairs := systray.AddMenuItem("Unstable pairs", "Get all unstable pairs")
+	mStablePairs := systray.AddMenuItem("Stable pairs", "Get all stable pairs")
 	systray.AddSeparator()
 	mDashboard := systray.AddMenuItem("Open Dashboard", "Opens a simple HTML Hello, World")
 	mKekBrowser := systray.AddMenuItem("KEK in Browser", "Opens Google in a normal browser")
@@ -79,6 +81,7 @@ func OnReady() {
 		case <-mBTC.ClickedCh:
 			services.TrackBTC(btcc)
 		case <-mStart.ClickedCh:
+			go services.AnalyzePairs(command2, progress2, tt)
 			command1 <- "Play"
 			command2 <- "Play"
 		case <-mPause.ClickedCh:
@@ -152,8 +155,9 @@ func OnReady() {
 			mSwapDays_7.Check()
 		case <-mRefreshPairs.ClickedCh:
 			services.GetAllPairs(pirc)
-		case <-mTradePairs.ClickedCh:
-			go services.TradePairs(command2, progress2, tt)
+		case <-mTrendingPairs.ClickedCh:
+		case <-mUnStablePairs.ClickedCh:
+		case <-mStablePairs.ClickedCh:
 		case <-mDashboard.ClickedCh:
 			err := views.Get().OpenIndex()
 			if err != nil {
@@ -198,7 +202,7 @@ func OnReady() {
 			msg := <-pirc
 			mRefreshPairs.SetTitle(fmt.Sprintf("Refreshing pairs %d...", msg))
 		case <-progress2:
-			mTradePairs.SetTitle(fmt.Sprintf("Tradable pairs %d/%d", tt.GetProgress(), tt.GetTotal()))
+			mStart.SetTitle(fmt.Sprintf("Working on %d of %d", tt.GetProgress(), tt.GetTotal()))
 			if tt.GetTotal() == tt.GetProgress() {
 				err := views.Get().OpenTrades(tt)
 				if err != nil {
