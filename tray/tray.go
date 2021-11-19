@@ -52,10 +52,11 @@ func OnReady() {
 	btcc := make(chan string, 1)
 	pirc := make(chan int, 1)
 
-	command := make(chan string)
-	progress := make(chan int)
-	go services.Startup(command)
+	command1 := make(chan string)
+	go services.Startup(command1)
 
+	command2 := make(chan string)
+	progress2 := make(chan int)
 	tt := &services.Tokens{}
 
 	for {
@@ -66,15 +67,18 @@ func OnReady() {
 		case <-mBTC.ClickedCh:
 			services.TrackBTC(btcc)
 		case <-mStart.ClickedCh:
-			command <- "Play"
+			command1 <- "Play"
+			command2 <- "Play"
 		case <-mPause.ClickedCh:
-			command <- "Pause"
+			command1 <- "Pause"
+			command2 <- "Pause"
 		case <-mStop.ClickedCh:
-			command <- "Stop"
+			command1 <- "Stop"
+			command2 <- "Stop"
 		case <-mRefreshPairs.ClickedCh:
 			services.GetAllPairs(pirc)
 		case <-mTradablePairs.ClickedCh:
-			go services.TradablePairs(command, progress, tt)
+			go services.TradablePairs(command2, progress2, tt)
 		case <-mDashboard.ClickedCh:
 			err := views.Get().OpenIndex()
 			if err != nil {
@@ -123,7 +127,7 @@ func OnReady() {
 		case <-pirc:
 			msg := <-pirc
 			mRefreshPairs.SetTitle(fmt.Sprintf("Refreshing pairs %d...", msg))
-		case <-progress:
+		case <-progress2:
 			mTradablePairs.SetTitle(fmt.Sprintf("Tradable pairs %d/%d", tt.GetProgress(), tt.GetTotal()))
 		case <-mQuit.ClickedCh:
 			systray.Quit()
