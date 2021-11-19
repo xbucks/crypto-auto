@@ -27,6 +27,9 @@ func OnReady() {
 	mBTC.SetIcon(getIcon("assets/btc.ico"))
 	mBTC.Disable()
 	systray.AddSeparator()
+	mStart := systray.AddMenuItem("Start", "Start background tracker to find tradable tokens")
+	mStop := systray.AddMenuItem("Stop", "Stop background tracker to find tradable tokens")
+	systray.AddSeparator()
 	mDashboard := systray.AddMenuItem("Open Dashboard", "Opens a simple HTML Hello, World")
 	mKekBrowser := systray.AddMenuItem("KEK in Browser", "Opens Google in a normal browser")
 	mDexEmbed := systray.AddMenuItem("DEX in Window", "Opens Google in a custom window")
@@ -52,6 +55,8 @@ func OnReady() {
 			services.TrackETH(ethc)
 		case <-mBTC.ClickedCh:
 			services.TrackBTC(btcc)
+		case <-mStart.ClickedCh:
+		case <-mStop.ClickedCh:
 		case <-mDashboard.ClickedCh:
 			err := views.Get().OpenIndex()
 			if err != nil {
