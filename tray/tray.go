@@ -44,12 +44,12 @@ func OnReady() {
 	sigc := make(chan os.Signal, 1)
 	signal.Notify(sigc, syscall.SIGTERM, syscall.SIGINT)
 
-	services.TrackPairs()
-
 	money := accounting.Accounting{Symbol: "$", Precision: 2}
 	ethc := make(chan string, 1)
 	btcc := make(chan string, 1)
 	pirc := make(chan int, 1)
+
+	services.Startup()
 
 	for {
 		select {
@@ -61,6 +61,7 @@ func OnReady() {
 		case <-mStart.ClickedCh:
 			services.GetAllPairs(pirc)
 		case <-mStop.ClickedCh:
+			// quit <- true
 		case <-mRefreshPairs.ClickedCh:
 			services.GetAllPairs(pirc)
 		case <-mDashboard.ClickedCh:
