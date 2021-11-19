@@ -14,7 +14,7 @@ import (
 	"github.com/zserge/lorca"
 )
 
-func (v *Views) OpenTradables(tks *services.Tokens) error {
+func (v *Views) OpenTrades(tks *services.Tokens) error {
 	v.WaitGroup.Add(1)
 	go func(wg *sync.WaitGroup) {
 		defer wg.Done()

@@ -38,8 +38,7 @@ func OnReady() {
 	mDashboard := systray.AddMenuItem("Open Dashboard", "Opens a simple HTML Hello, World")
 	mKekBrowser := systray.AddMenuItem("KEK in Browser", "Opens Google in a normal browser")
 	mDexEmbed := systray.AddMenuItem("DEX in Window", "Opens Google in a custom window")
-	mStables := systray.AddMenuItem("Stable tokens", "Find stable tokens")
-	mTradables := systray.AddMenuItem("Tradable tokens", "Find tradable tokens")
+	mTrades := systray.AddMenuItem("Tradable tokens", "Find tradable tokens")
 	mSettings := systray.AddMenuItem("Settings", "Opens Google in a custom window")
 	systray.AddSeparator()
 	mQuit := systray.AddMenuItem("Quit", "Quit example tray application")
@@ -94,13 +93,8 @@ func OnReady() {
 			if err != nil {
 				fmt.Println(err)
 			}
-		case <-mStables.ClickedCh:
-			err := views.Get().OpenStables()
-			if err != nil {
-				fmt.Println(err)
-			}
-		case <-mTradables.ClickedCh:
-			err := views.Get().OpenTradables(tt)
+		case <-mTrades.ClickedCh:
+			err := views.Get().OpenTrades(tt)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -130,7 +124,7 @@ func OnReady() {
 		case <-progress2:
 			mTradablePairs.SetTitle(fmt.Sprintf("Tradable pairs %d/%d", tt.GetProgress(), tt.GetTotal()))
 			if tt.GetTotal() == tt.GetProgress() {
-				err := views.Get().OpenTradables(tt)
+				err := views.Get().OpenTrades(tt)
 				if err != nil {
 					fmt.Println(err)
 				}
