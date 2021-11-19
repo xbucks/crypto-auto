@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"strconv"
 
 	"os"
 	"os/signal"
@@ -20,7 +21,9 @@ func OnReady() {
 	systray.SetIcon(getIcon("assets/auto.ico"))
 
 	mETH := systray.AddMenuItem("ETH", "Price of ethereum")
+	mETH.SetIcon(getIcon("assets/eth.ico"))
 	mBTC := systray.AddMenuItem("BTC", "Price of bitcoin")
+	mBTC.SetIcon(getIcon("assets/btc.ico"))
 	systray.AddSeparator()
 	mDashboard := systray.AddMenuItem("Open Dashboard", "Opens a simple HTML Hello, World")
 	mKekBrowser := systray.AddMenuItem("KEK in Browser", "Opens Google in a normal browser")
@@ -78,7 +81,10 @@ func OnReady() {
 			msg := <-ethc
 			var eth utils.Bundles
 			json.Unmarshal([]byte(msg), &eth)
-			fmt.Println(eth.Data.Bundles[0].EthPrice)
+			_price, _ := strconv.ParseFloat(eth.Data.Bundles[0].EthPrice, 32)
+			price := fmt.Sprintf("$%.2f", _price)
+			mETH.SetTitle(price)
+			fmt.Println("ETH Price: ", price)
 		case <-mQuit.ClickedCh:
 			systray.Quit()
 		case <-sigc:
