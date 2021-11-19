@@ -8,12 +8,8 @@
 		body { height: 100vh; display: flex; align-items: center; justify-content: center; background-color: #f1c40f; font-family: 'Helvetika Neue', Arial, sans-serif; font-size: 18px; }
 		.counter-container { display: flex; flex-direction: column; align-items: center; }
 		.counter { text-transform: uppercase; color: #fff; font-weight: bold; font-size: 3rem; }
-		.btn-row { display: flex; align-items: center; margin: 1rem; }
-		.btn { cursor: pointer; min-width: 4em; padding: 1em; border-radius: 5px; text-align: center; margin: 0 1rem; box-shadow: 0 6px #8b5e00; color: white; background-color: #E4B702; position: relative; font-weight: bold; }
-		.btn:hover { box-shadow: 0 4px #8b5e00; top: 2px; }
-		.btn:active{ box-shadow: 0 1px #8b5e00; top: 5px; }
 		.tokens { color: white; font-size: 16px; }
-		.token { display: flex; }
+		.token { display: flex; height: 50px; }
 		.name { width: 200px; }
 		.address { overflow: hidden; text-overflow: ellipsis; width: 200px; }
 		.max { width: 100px; }
@@ -21,15 +17,15 @@
 		.price { width: 100px; }
 		.change { width: 100px; }
 		.period { width: 100px; }
+		.btn { cursor: pointer; padding: 1em; border-radius: 5px; text-align: center; box-shadow: 0 6px #8b5e00; color: white; background-color: #E4B702; position: relative; font-weight: bold; }
+		.btn:hover { box-shadow: 0 4px #8b5e00; top: 2px; }
+		.btn:active{ box-shadow: 0 1px #8b5e00; top: 5px; }
 		</style>
 	</head>
-	<body onload=start()>
+	<body onload="start()">
 		<!-- UI layout -->
 		<div class="counter-container">
 			<div class="counter">Stable tokens</div>
-			<div class="btn-row">
-				<div class="btn">Synchronize</div>
-			</div>
 			<div class="tokens">
 				<div class="token">
 					<span class="name">Name</span>
@@ -45,7 +41,6 @@
 
 		<!-- Connect UI actions to Go functions -->
 		<script>
-			const btnSync = document.querySelector('.btn');
 			const data = document.querySelector('.tokens');
 
 			// We use async/await because Go functions are asynchronous
@@ -70,18 +65,20 @@
 								<span class="min">${min}$</span>
 								<span class="change">${change}$</span>
 								<span class="period">${period} hours</span>
+								<div id="${address}" class="btn">+/-</div>
 							</div>
 						`
 					}
+					const btnSync = document.getElementById(address);
+					btnSync.addEventListener('click', async () => {
+						await addPair(address);
+					});
 				}
 			};
 
-			btnSync.addEventListener('click', async () => {
-				// await addPair("test plus"); // Call Go function
+			setInterval(function () {
 				render();
-			});
-
-			render();
+			}, 1000);
 		</script>
 	</body>
 </html>

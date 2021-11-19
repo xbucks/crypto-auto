@@ -31,7 +31,9 @@ func (v *Views) OpenStables() error {
 
 		// Create and bind Go object to the UI
 		c := &services.Tokens{}
-		ui.Bind("addPair", c.Add)
+		ui.Bind("addPair", func(t string) {
+			fmt.Println(t)
+		})
 		ui.Bind("getPairs", c.Get)
 		ui.Bind("getLength", c.GetLength)
 		ui.Bind("getItem", c.GetItem)
