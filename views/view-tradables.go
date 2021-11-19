@@ -31,8 +31,12 @@ func (v *Views) OpenTradables() error {
 
 		// Create and bind Go object to the UI
 		c := &services.Tokens{}
-		ui.Bind("addPair", c.Add)
+		ui.Bind("addPair", func(t string) {
+			fmt.Println(t)
+		})
 		ui.Bind("getPairs", c.Get)
+		ui.Bind("getLength", c.GetLength)
+		ui.Bind("getItem", c.GetItem)
 
 		// A simple way to know when UI is ready (uses body.onload event in JS)
 		ui.Bind("start", func() {
@@ -50,7 +54,7 @@ func (v *Views) OpenTradables() error {
 		}
 		defer ln.Close()
 		go http.Serve(ln, http.FileServer(http.FS(fs)))
-		ui.Load(fmt.Sprintf("http://%s/www/stables.html", ln.Addr()))
+		ui.Load(fmt.Sprintf("http://%s/www/trades.html", ln.Addr()))
 
 		// You may use console.log to debug your JS code, it will be printed via
 		// log.Println(). Also exceptions are printed in a similar manner.
