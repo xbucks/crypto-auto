@@ -62,10 +62,11 @@ func GetAllPairs() {
 			var pairs utils.Pairs
 			json.Unmarshal([]byte(msg), &pairs)
 			counts := len(pairs.Data.Pairs)
-			fmt.Println(skip, ": ", counts)
+			fmt.Println(".", skip)
 			if counts == 0 {
 				return
 			}
+			SaveAllPairs(&pairs)
 			skip += 1
 		}
 	}()
