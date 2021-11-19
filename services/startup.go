@@ -39,7 +39,7 @@ func trackMainPair() {
 	money := accounting.Accounting{Symbol: "$", Precision: 6}
 	cc := make(chan string, 1)
 	var swaps utils.Swaps
-	go utils.Post(cc, "swaps", 2, 0, "0x7a99822968410431edd1ee75dab78866e31caf39")
+	go utils.SwapsByCounts(cc, 2, "0x7a99822968410431edd1ee75dab78866e31caf39")
 
 	msg := <-cc
 	json.Unmarshal([]byte(msg), &swaps)
