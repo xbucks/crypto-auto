@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -31,7 +32,44 @@ func Post(target chan string, to string, limit int, skip int, id string) {
 }
 
 func SwapsByDay(target chan string, limit int, id string) {
+	var results Swaps
+	var temp Swaps
+	i := 0
+	now := time.Now()
+	for {
+		ch := make(chan string)
+		go Post(ch, "swaps", 1000, i*1000, id)
 
+		msg := <-ch
+		var swaps Swaps
+		json.Unmarshal([]byte(msg), &swaps)
+
+		lastInt, _ := strconv.ParseInt(swaps.Data.Swaps[999].Timestamp, 10, 64)
+		lastTime := time.Unix(lastInt, 0)
+		period := now.Sub(lastTime)
+
+		if period.Hours() >= 24*float64(limit) {
+			temp = swaps
+			break
+		} else {
+			results.Data.Swaps = append(results.Data.Swaps, swaps.Data.Swaps...)
+		}
+		i += 1
+	}
+
+	for i = 0; i < len(temp.Data.Swaps); i++ {
+		lastInt, _ := strconv.ParseInt(temp.Data.Swaps[i].Timestamp, 10, 64)
+		lastTime := time.Unix(lastInt, 0)
+		period := now.Sub(lastTime)
+		if period.Hours() > 24*float64(limit) {
+			break
+		} else {
+			results.Data.Swaps = append(results.Data.Swaps, temp.Data.Swaps[i])
+		}
+	}
+
+	tg, _ := json.Marshal(results)
+	target <- string(tg)
 }
 
 func SwapsByCounts(target chan string, limit int, id string) {
