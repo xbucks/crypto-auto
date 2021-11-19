@@ -43,18 +43,7 @@ func TradableTokens(wg *sync.WaitGroup, pairs utils.Pairs, t *Tokens) {
 }
 
 func StoreAndRemovePair(pair string) (err error) {
-	if IsExist(pair) {
-		err = RemoveOnePair(pair)
-		if err == nil {
-			// Alert("Removed!", pair)
-		}
-	} else {
-		err = WriteOnePair(pair)
-		if err == nil {
-			// Alert("Saved!", pair)
-		}
-	}
-	return err
+	return nil
 }
 
 func tradableToken(pings chan string, id string, t *Tokens) {
