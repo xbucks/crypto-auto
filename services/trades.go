@@ -6,50 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/getlantern/systray"
 	"github.com/hirokimoto/crypto-auto/utils"
-	"github.com/leekchan/accounting"
 )
-
-func TrackPairs() {
-	money := accounting.Accounting{Symbol: "$", Precision: 6}
-	pairs := []string{"0x7a99822968410431edd1ee75dab78866e31caf39"}
-	olds := []float64{0.1}
-
-	go func() {
-		for {
-			var wg sync.WaitGroup
-			wg.Add(len(pairs))
-
-			cc := make(chan string, 1)
-			var swaps utils.Swaps
-			go trackPairs(&wg, pairs, cc)
-
-			ai := 0.1
-			msg := <-cc
-			json.Unmarshal([]byte(msg), &swaps)
-			n, p, c, d, a := SwapsInfo(swaps, ai)
-
-			price := money.FormatMoney(p)
-			change := money.FormatMoney(c)
-			duration := fmt.Sprintf("%.2f hours", d)
-
-			systray.SetTitle(fmt.Sprintf("%s %s", n, price))
-			systray.SetTooltip("Crypto Auto")
-			fmt.Println("---->>>  ", n, change, duration, a)
-
-			if p != olds[0] {
-				message := fmt.Sprintf("%s: %s %s %s", n, price, change, duration)
-				url := "https://kek.tools/t/0x295b42684f90c77da7ea46336001010f2791ec8c?pair=0x7a99822968410431edd1ee75dab78866e31caf39"
-				Notify("Price changed!", message, url)
-			}
-			olds[0] = p
-
-			time.Sleep(1 * time.Second)
-			wg.Wait()
-		}
-	}()
-}
 
 func TrackStable(t *Tokens) {
 	pc := make(chan string, 1)
