@@ -55,7 +55,7 @@ func TrackPairs() {
 func trackPairs(wg *sync.WaitGroup, pairs []string, target chan string, limit int) {
 	for _, pair := range pairs {
 		defer wg.Done()
-		go utils.Post(target, "swaps", limit, pair)
+		go utils.Post(target, "swaps", limit, 0, pair)
 		fmt.Print(".")
 	}
 	time.Sleep(time.Second * 5)

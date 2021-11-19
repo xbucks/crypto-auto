@@ -69,7 +69,7 @@ type Pairs struct {
 	}
 }
 
-func Query(target string, limit int, id string) map[string]string {
+func Query(target string, limit int, skip int, id string) map[string]string {
 	var query map[string]string
 	switch target {
 	case "bundles":
@@ -126,23 +126,22 @@ func Query(target string, limit int, id string) map[string]string {
 		`, limit, id)
 		query = map[string]string{"query": sub}
 	case "pairs":
-		query = map[string]string{
-			"query": `
-				query pairs {
-					pairs(first: 1000, orderBy: reserveUSD, orderDirection: desc) {
-						id,
-						token0 {
-							symbol
-						},
-						token1 {
-							symbol
-						},
-						token0Price,
-						token1Price,
-					}
-				}
-			`,
+		sub := fmt.Sprintf(`
+		query pairs {
+			pairs(first: %d, skip: %d, orderBy: reserveUSD, orderDirection: desc) {
+				id,
+				token0 {
+					symbol
+				},
+				token1 {
+					symbol
+				},
+				token0Price,
+				token1Price,
+			}
 		}
+		`, limit, skip)
+		query = map[string]string{"query": sub}
 	default:
 	}
 	return query

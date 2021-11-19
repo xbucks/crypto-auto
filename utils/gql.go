@@ -24,7 +24,7 @@ func request(query map[string]string, target chan string) {
 	target <- string(data)
 }
 
-func Post(target chan string, to string, limit int, id string) {
-	query := Query(to, limit, id)
+func Post(target chan string, to string, limit int, skip int, id string) {
+	query := Query(to, limit, skip, id)
 	request(query, target)
 }

@@ -12,7 +12,7 @@ import (
 func TrackStable(t *Tokens) {
 	pc := make(chan string, 1)
 	for {
-		go utils.Post(pc, "pairs", 1000, "")
+		go utils.Post(pc, "pairs", 1000, 0, "")
 
 		msg1 := <-pc
 		var pairs utils.Pairs
@@ -34,7 +34,7 @@ func StableTokens(wg *sync.WaitGroup, pairs utils.Pairs, t *Tokens) {
 	for index, item := range pairs.Data.Pairs {
 		defer wg.Done()
 		cc := make(chan string, 1)
-		go utils.Post(cc, "swaps", 1000, item.Id)
+		go utils.Post(cc, "swaps", 1000, 0, item.Id)
 		stableToken(cc, item.Id, t)
 		t.SetProgress(index)
 		fmt.Print(".")

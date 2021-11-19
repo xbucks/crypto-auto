@@ -10,7 +10,7 @@ import (
 func TrackETH(target chan string) {
 	go func() {
 		for {
-			go utils.Post(target, "bundles", 10, "")
+			go utils.Post(target, "bundles", 10, 0, "")
 			time.Sleep(time.Second * 5)
 		}
 	}()
