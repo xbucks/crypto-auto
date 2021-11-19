@@ -57,12 +57,12 @@ func GetAllPairs(target chan int) {
 	go func() {
 		for {
 			cc := make(chan string, 1)
-			go utils.Post(cc, "pairs", 1000, 0, "")
+			go utils.Post(cc, "pairs", 1000, 1000*skip, "")
 			msg := <-cc
 			var pairs utils.Pairs
 			json.Unmarshal([]byte(msg), &pairs)
 			counts := len(pairs.Data.Pairs)
-			fmt.Println(".", skip)
+			fmt.Println(skip, " : ", counts)
 			if counts == 0 {
 				return
 			}
