@@ -3,13 +3,12 @@ package services
 import (
 	"encoding/json"
 	"fmt"
-	"sync"
 	"time"
 
 	"github.com/hirokimoto/crypto-auto/utils"
 )
 
-func TradablePairs(command <-chan string) {
+func TradablePairs(command <-chan string, t *Tokens) {
 	pairs, _ := ReadAllPairs()
 	var status = "Play"
 	for index, pair := range pairs {
@@ -26,18 +25,18 @@ func TradablePairs(command <-chan string) {
 			}
 		default:
 			if status == "Play" {
-				trackPair(pair, index)
+				trackPair(pair, index, t)
 			}
 		}
 		time.Sleep(1 * time.Second)
 	}
 }
 
-func trackPair(pair string, index int) {
-	cc := make(chan string, 1)
-	go utils.Post(cc, "swaps", 1000, 0, pair)
+func trackPair(pair string, index int, t *Tokens) {
+	ch := make(chan string, 1)
+	go utils.Post(ch, "swaps", 1000, 0, pair)
 
-	msg := <-cc
+	msg := <-ch
 	var swaps utils.Swaps
 	json.Unmarshal([]byte(msg), &swaps)
 
@@ -49,42 +48,9 @@ func trackPair(pair string, index int) {
 
 		if (max-min)/price > 0.1 && period < 24*3 && howOld < 24 && price > 0.0001 {
 			fmt.Println("Tradable token !!!!!   ", name, price, change, period)
-		}
-	}
-	fmt.Print(index, "|")
-}
-
-func TradableTokens(wg *sync.WaitGroup, t *Tokens) {
-	pairs, _ := ReadAllPairs()
-	for index, item := range pairs {
-		defer wg.Done()
-		cc := make(chan string, 1)
-		go utils.Post(cc, "swaps", 1000, 0, item)
-		tradableToken(cc, item, t)
-		t.SetProgress(index)
-		fmt.Print(".")
-	}
-}
-
-func StoreAndRemovePair(pair string) (err error) {
-	return nil
-}
-
-func tradableToken(pings chan string, id string, t *Tokens) {
-	var swaps utils.Swaps
-	msg := <-pings
-	json.Unmarshal([]byte(msg), &swaps)
-
-	if len(swaps.Data.Swaps) > 0 {
-		name, price, change, period, _ := SwapsInfo(swaps, 0.1)
-
-		min, max, _, _, _, _ := minMax(swaps)
-		howOld := howMuchOld(swaps)
-
-		if (max-min)/price > 0.1 && period < 24*3 && howOld < 24 && price > 0.0001 {
 			ct := &Token{
 				name:    name,
-				address: id,
+				address: pair,
 				price:   fmt.Sprintf("%f", price),
 				change:  fmt.Sprintf("%f", change),
 				min:     fmt.Sprintf("%f", min),
@@ -92,7 +58,7 @@ func tradableToken(pings chan string, id string, t *Tokens) {
 				period:  fmt.Sprintf("%.2f", period),
 			}
 			t.Add(ct)
-			fmt.Println("New token!!!!!   ", ct.name)
 		}
 	}
+	fmt.Print(index, "|")
 }

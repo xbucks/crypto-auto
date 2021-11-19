@@ -71,7 +71,8 @@ func OnReady() {
 		case <-mRefreshPairs.ClickedCh:
 			services.GetAllPairs(pirc)
 		case <-mTradablePairs.ClickedCh:
-			go services.TradablePairs(command)
+			t := &services.Tokens{}
+			go services.TradablePairs(command, t)
 		case <-mDashboard.ClickedCh:
 			err := views.Get().OpenIndex()
 			if err != nil {
