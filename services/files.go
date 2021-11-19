@@ -9,11 +9,11 @@ import (
 	"github.com/hirokimoto/crypto-auto/utils"
 )
 
-const TRADES_TARGET string = "/trades.txt"
+const TRADABLES string = "/tradables.txt"
 const ALL_PAIRS string = "/allpairs.txt"
 
 func SaveTradables(tokens *Tokens) {
-	path := absolutePath() + TRADES_TARGET
+	path := absolutePath() + TRADABLES
 	trades, err := readLines(path)
 	if err != nil {
 		return
@@ -23,7 +23,7 @@ func SaveTradables(tokens *Tokens) {
 			trades = append(trades, v.address)
 		}
 	}
-	writeLines(trades, TRADES_TARGET)
+	writeLines(trades, TRADABLES)
 	fmt.Println("Saved tradable tokens successfully!")
 }
 
