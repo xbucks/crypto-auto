@@ -53,25 +53,18 @@ func TrackPairs() {
 }
 
 func GetAllPairs() {
-	quit := make(chan bool)
-	target := make(chan string)
 	skip := 0
 	go func() {
 		for {
+			target := make(chan string, 1)
 			go utils.Post(target, "pairs", 1000, 0, "")
-			select {
-			case <-target:
-				msg := <-target
-				var pairs utils.Pairs
-				json.Unmarshal([]byte(msg), &pairs)
-				counts := len(pairs.Data.Pairs)
-				fmt.Println(skip, ": ", counts)
-				if skip == 0 {
-					quit <- true
-				}
-			case <-quit:
-					return
-			default:
+			msg := <-target
+			var pairs utils.Pairs
+			json.Unmarshal([]byte(msg), &pairs)
+			counts := len(pairs.Data.Pairs)
+			fmt.Println(skip, ": ", counts)
+			if counts == 0 {
+				return
 			}
 			skip += 1
 		}
