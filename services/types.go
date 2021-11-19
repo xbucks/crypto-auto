@@ -7,6 +7,7 @@ import (
 
 type Token struct {
 	sync.Mutex
+	target  string
 	name    string
 	address string
 	price   string

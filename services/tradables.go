@@ -46,9 +46,22 @@ func trackPair(pair string, index int, t *Tokens) {
 		min, max, _, _, _, _ := minMax(swaps)
 		howOld := howMuchOld(swaps)
 
-		if (max-min)/price > 0.1 && period < 24*3 && howOld < 24 && price > 0.0001 {
-			fmt.Println("Tradable token !!!!!   ", name, price, change, period)
+		var isTradable = (max-min)/price > 0.1 && period < 24*3 && howOld < 24 && price > 0.0001
+		var isStable = (max-min)/price < 0.1 && period > 24 && howOld < 24
+
+		target := ""
+		if isTradable {
+			target = "tradable"
+			Notify("Tradable token!", fmt.Sprintf("%s %f %f", name, price, change), "https://kek.tools/")
+		}
+		if isStable {
+			target = "stable"
+			Notify("Stable token!", fmt.Sprintf("%s %f %f", name, price, change), "https://kek.tools/")
+		}
+
+		if isTradable || isStable {
 			ct := &Token{
+				target:  target,
 				name:    name,
 				address: pair,
 				price:   fmt.Sprintf("%f", price),
@@ -58,7 +71,6 @@ func trackPair(pair string, index int, t *Tokens) {
 				period:  fmt.Sprintf("%.2f", period),
 			}
 			t.Add(ct)
-			Notify("Tradable token!", fmt.Sprintf("%s %f %f", name, price, change), "https://kek.tools/")
 		}
 	}
 	t.SetProgress(index)
