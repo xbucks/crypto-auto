@@ -8,13 +8,13 @@ import (
 	"github.com/hirokimoto/crypto-auto/utils"
 )
 
-func TradableTokens(wg *sync.WaitGroup, pairs utils.Pairs, t *Tokens) {
+func TradableTokens(wg *sync.WaitGroup, t *Tokens) {
 	defer wg.Done()
-
-	for index, item := range pairs.Data.Pairs {
+	pairs, _ := ReadAllPairs()
+	for index, item := range pairs {
 		cc := make(chan string, 1)
-		go utils.Post(cc, "swaps", 1000, 0, item.Id)
-		tradableToken(cc, item.Id, t)
+		go utils.Post(cc, "swaps", 1000, 0, item)
+		tradableToken(cc, item, t)
 		t.SetProgress(index)
 		fmt.Print(".")
 	}

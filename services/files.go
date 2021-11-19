@@ -53,6 +53,12 @@ func SaveAllPairs(p *utils.Pairs) {
 	writeLines(pairs, path)
 }
 
+func ReadAllPairs() ([]string, error) {
+	path := absolutePath() + ALL_PAIRS
+	pairs, err := readLines(path)
+	return pairs, err
+}
+
 func isExistedPairs(p string, pairs []string) bool {
 	for _, v := range pairs {
 		if v == p {
