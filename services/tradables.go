@@ -10,6 +10,7 @@ import (
 
 func TradablePairs(command <-chan string, t *Tokens) {
 	pairs, _ := ReadAllPairs()
+	t.SetTotal(len(pairs))
 	var status = "Play"
 	for index, pair := range pairs {
 		select {
@@ -60,5 +61,6 @@ func trackPair(pair string, index int, t *Tokens) {
 			t.Add(ct)
 		}
 	}
+	t.SetProgress(index)
 	fmt.Print(index, "|")
 }

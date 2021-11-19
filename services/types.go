@@ -26,6 +26,7 @@ type Tokens struct {
 	sync.Mutex
 	data     []Token
 	progress int
+	total    int
 }
 
 func (c *Tokens) Add(pair *Token) {
@@ -61,8 +62,20 @@ func (c *Tokens) GetProgress() int {
 	return c.progress
 }
 
+func (c *Tokens) GetTotal() int {
+	c.Lock()
+	defer c.Unlock()
+	return c.total
+}
+
 func (c *Tokens) SetProgress(p int) {
 	c.Lock()
 	defer c.Unlock()
 	c.progress = p
+}
+
+func (c *Tokens) SetTotal(p int) {
+	c.Lock()
+	defer c.Unlock()
+	c.total = p
 }
