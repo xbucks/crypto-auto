@@ -33,7 +33,7 @@ func OnReady() {
 	mStop := systray.AddMenuItem("Stop", "Stop background services")
 	systray.AddSeparator()
 	mRefreshPairs := systray.AddMenuItem("Refresh pairs", "Get all available pairs")
-	mTradablePairs := systray.AddMenuItem("Tradable pairs", "Get all tradable pairs")
+	mTradePairs := systray.AddMenuItem("Tradable pairs", "Get all tradable pairs")
 	systray.AddSeparator()
 	mDashboard := systray.AddMenuItem("Open Dashboard", "Opens a simple HTML Hello, World")
 	mKekBrowser := systray.AddMenuItem("KEK in Browser", "Opens Google in a normal browser")
@@ -76,8 +76,8 @@ func OnReady() {
 			command2 <- "Stop"
 		case <-mRefreshPairs.ClickedCh:
 			services.GetAllPairs(pirc)
-		case <-mTradablePairs.ClickedCh:
-			go services.TradablePairs(command2, progress2, tt)
+		case <-mTradePairs.ClickedCh:
+			go services.TradePairs(command2, progress2, tt)
 		case <-mDashboard.ClickedCh:
 			err := views.Get().OpenIndex()
 			if err != nil {
@@ -122,7 +122,7 @@ func OnReady() {
 			msg := <-pirc
 			mRefreshPairs.SetTitle(fmt.Sprintf("Refreshing pairs %d...", msg))
 		case <-progress2:
-			mTradablePairs.SetTitle(fmt.Sprintf("Tradable pairs %d/%d", tt.GetProgress(), tt.GetTotal()))
+			mTradePairs.SetTitle(fmt.Sprintf("Tradable pairs %d/%d", tt.GetProgress(), tt.GetTotal()))
 			if tt.GetTotal() == tt.GetProgress() {
 				err := views.Get().OpenTrades(tt)
 				if err != nil {
