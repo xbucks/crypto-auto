@@ -25,6 +25,7 @@ func OnReady() {
 	mETH.SetIcon(getIcon("assets/eth.ico"))
 	mBTC := systray.AddMenuItem("BTC", "Price of bitcoin")
 	mBTC.SetIcon(getIcon("assets/btc.ico"))
+	mBTC.Disable()
 	systray.AddSeparator()
 	mDashboard := systray.AddMenuItem("Open Dashboard", "Opens a simple HTML Hello, World")
 	mKekBrowser := systray.AddMenuItem("KEK in Browser", "Opens Google in a normal browser")
