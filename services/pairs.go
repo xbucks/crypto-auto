@@ -34,7 +34,7 @@ func TrackPairs() {
 			change := money.FormatMoney(c)
 			duration := fmt.Sprintf("%.2f hours", d)
 
-			systray.SetTitle(fmt.Sprintf("%s/%s", n, price))
+			systray.SetTitle(fmt.Sprintf("%s|%f", n, p))
 			systray.SetTooltip("Crypto Auto")
 			t := time.Now()
 			fmt.Println(t.Format("2006/01/02 15:04:05"), ": ", n, price, change, duration, a)
