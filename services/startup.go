@@ -10,6 +10,8 @@ import (
 	"github.com/leekchan/accounting"
 )
 
+var autoPrice float64 = 0.0
+
 func Startup(command <-chan string) {
 	var status = "Play"
 	for {
@@ -40,9 +42,8 @@ func work() {
 	go utils.Post(cc, "swaps", 2, 0, "0x7a99822968410431edd1ee75dab78866e31caf39")
 
 	msg := <-cc
-	ai := 0.1
 	json.Unmarshal([]byte(msg), &swaps)
-	n, p, c, d, a := SwapsInfo(swaps, ai)
+	n, p, c, d, a := SwapsInfo(swaps, 0.1)
 
 	price := money.FormatMoney(p)
 	change := money.FormatMoney(c)
@@ -51,4 +52,10 @@ func work() {
 	systray.SetTitle(fmt.Sprintf("%s|%f", n, p))
 	t := time.Now()
 	fmt.Println(t.Format("2006/01/02 15:04:05"), ": ", n, price, change, duration, a)
+
+	if p != autoPrice {
+		message := fmt.Sprintf("%s: %s %s %s", n, price, change, duration)
+		Notify("Price changed!", message, "https://kek.tools/")
+	}
+	autoPrice = p
 }
