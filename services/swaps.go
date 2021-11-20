@@ -8,12 +8,13 @@ import (
 	"github.com/hirokimoto/crypto-auto/utils"
 )
 
-func SwapsInfo(swaps utils.Swaps, ps float64) (name string, price float64, change float64, duration float64, alert bool) {
+func SwapsInfo(swaps utils.Swaps, ps float64) (name string, price float64, change float64, duration float64, average float64, alert bool) {
 	name = tokenName(swaps)
 	price, change = priceChanges(swaps)
 	_, _, duration = periodOfSwaps(swaps)
 	alert = priceAlert(swaps, ps)
-	return name, price, change, duration, alert
+	average = averageOfSwaps(swaps.Data.Swaps)
+	return name, price, change, duration, average, alert
 }
 
 func SwapInfo(swap utils.Swap) (price float64, target string, amount string, amount1 string, amount2 string) {
@@ -149,4 +150,61 @@ func howMuchOld(swaps utils.Swaps) float64 {
 	now := time.Now()
 	period := now.Sub(end)
 	return period.Hours()
+}
+
+func averageOfSwaps(swaps []utils.Swap) float64 {
+	sum := 0.0
+	for _, item := range swaps {
+		price, _ := priceOfSwap(item)
+		sum += price
+	}
+	return sum / float64(len(swaps))
+}
+
+func checkupOfSwaps(swaps utils.Swaps) bool {
+	avg := 0.0
+	duration := 10
+	amount := int(len(swaps.Data.Swaps) / duration)
+	for i := 0; i < duration; i++ {
+		start := i * amount
+		end := (i + 1) * amount
+		if i == duration-1 {
+			end = len(swaps.Data.Swaps)
+		}
+		var temp []utils.Swap
+		for j := start; j < end; j++ {
+			temp = append(temp, swaps.Data.Swaps[j])
+		}
+		cavg := averageOfSwaps(temp)
+		if cavg > avg {
+			avg = cavg
+		} else {
+			return false
+		}
+	}
+	return true
+}
+
+func checkdownOfSwaps(swaps utils.Swaps) bool {
+	avg := 10000000.0
+	duration := 10
+	amount := int(len(swaps.Data.Swaps) / duration)
+	for i := 0; i < duration; i++ {
+		start := i * amount
+		end := (i + 1) * amount
+		if i == duration-1 {
+			end = len(swaps.Data.Swaps)
+		}
+		var temp []utils.Swap
+		for j := start; j < end; j++ {
+			temp = append(temp, swaps.Data.Swaps[j])
+		}
+		cavg := averageOfSwaps(temp)
+		if cavg < avg {
+			avg = cavg
+		} else {
+			return false
+		}
+	}
+	return true
 }

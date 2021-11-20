@@ -204,7 +204,7 @@ func OnReady() {
 			msg := <-btcc
 			var swaps utils.Swaps
 			json.Unmarshal([]byte(msg), &swaps)
-			_, p, _, _, _ := services.SwapsInfo(swaps, 0.1)
+			_, p, _, _, _, _ := services.SwapsInfo(swaps, 0.1)
 			price := money.FormatMoney(p)
 			fmt.Println("BTC Price: ", price)
 		case <-pirc:

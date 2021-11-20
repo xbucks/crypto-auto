@@ -3,6 +3,7 @@ package services
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 
 	"github.com/hirokimoto/crypto-auto/utils"
 )
@@ -45,27 +46,45 @@ func trackPair(pair string, index int, duration int, t *Tokens) {
 	json.Unmarshal([]byte(msg), &swaps)
 
 	if len(swaps.Data.Swaps) > 0 {
-		name, price, change, period, _ := SwapsInfo(swaps, 0.1)
+		name, price, change, period, average, _ := SwapsInfo(swaps, 0.1)
 
 		min, max, _, _, _, _ := minMax(swaps)
 		howOld := howMuchOld(swaps)
 
-		var isTradable = (max-min)/price > 0.1 && period < 24*3 && howOld < 24 && price > 0.0001
-		var isStable = (max-min)/price < 0.1 && period > 24 && howOld < 24
+		inPeriodStable := true
+		inPeriodUnStable := true
+		if duration > 100 {
+			inPeriodStable = period > 24 && howOld < 24
+			inPeriodUnStable = period < 3*24 && howOld < 24
+		} else {
+			inPeriodStable = true
+			inPeriodUnStable = true
+		}
+
+		var isGoingUp = checkupOfSwaps(swaps)
+		var isGoingDown = checkdownOfSwaps(swaps)
+		var isStable = math.Abs((average-price)/price) < 0.1 && inPeriodStable
+		var isUnStable = math.Abs((average-price)/price) > 0.1 && inPeriodUnStable && price > 0.0001
 
 		target := ""
-		if isTradable {
+		if isUnStable {
 			target = "tradable"
 			Notify("Tradable token!", fmt.Sprintf("%s %f %f", name, price, change), "https://kek.tools/")
-			fmt.Println("Tradable token ", name, price, change, period)
+			fmt.Println("Tradable token ", name, price, average, change, period)
 		}
 		if isStable {
 			target = "stable"
 			Notify("Stable token!", fmt.Sprintf("%s %f %f", name, price, change), "https://kek.tools/")
-			fmt.Println("Stable token ", name, price, change, period)
+			fmt.Println("Stable token ", name, price, average, change, period)
+		}
+		if isGoingUp {
+			target = "up"
+		}
+		if isGoingDown {
+			target = "down"
 		}
 
-		if isTradable || isStable {
+		if isUnStable || isStable {
 			ct := &Token{
 				target:  target,
 				name:    name,

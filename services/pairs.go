@@ -23,7 +23,7 @@ func TrackPairs() {
 			msg := <-cc
 			ai := 0.1
 			json.Unmarshal([]byte(msg), &swaps)
-			n, p, c, d, a := SwapsInfo(swaps, ai)
+			n, p, c, d, _, a := SwapsInfo(swaps, ai)
 
 			price := money.FormatMoney(p)
 			change := money.FormatMoney(c)
