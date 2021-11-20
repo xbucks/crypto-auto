@@ -53,10 +53,12 @@ func trackPair(pair string, index int, t *Tokens) {
 		if isTradable {
 			target = "tradable"
 			Notify("Tradable token!", fmt.Sprintf("%s %f %f", name, price, change), "https://kek.tools/")
+			fmt.Println("Tradable token ", name, price, change, period)
 		}
 		if isStable {
 			target = "stable"
 			Notify("Stable token!", fmt.Sprintf("%s %f %f", name, price, change), "https://kek.tools/")
+			fmt.Println("Stable token ", name, price, change, period)
 		}
 
 		if isTradable || isStable {
