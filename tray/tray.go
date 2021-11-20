@@ -51,7 +51,6 @@ func OnReady() {
 	mStablePairs := systray.AddMenuItem("Stable pairs", "Get all stable pairs")
 	systray.AddSeparator()
 	mDashboard := systray.AddMenuItem("Dashboard", "Opens a simple HTML Hello, World")
-	mTrades := systray.AddMenuItem("Trades", "Show all tradable pairs")
 	mKekBrowser := systray.AddMenuItem("KEK in Browser", "Opens Google in a normal browser")
 	mDexEmbed := systray.AddMenuItem("DEX in Window", "Opens Google in a custom window")
 	systray.AddSeparator()
@@ -158,7 +157,7 @@ func OnReady() {
 		case <-mUnStablePairs.ClickedCh:
 		case <-mStablePairs.ClickedCh:
 		case <-mDashboard.ClickedCh:
-			err := views.Get().OpenIndex()
+			err := views.Get().OpenDashboard(tt)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -169,11 +168,6 @@ func OnReady() {
 			}
 		case <-mDexEmbed.ClickedCh:
 			err := views.Get().OpenGoogle()
-			if err != nil {
-				fmt.Println(err)
-			}
-		case <-mTrades.ClickedCh:
-			err := views.Get().OpenTrades(tt)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -203,7 +197,7 @@ func OnReady() {
 		case <-progress2:
 			mStart.SetTitle(fmt.Sprintf("Working on %d of %d", tt.GetProgress(), tt.GetTotal()))
 			if tt.GetTotal() == tt.GetProgress() {
-				err := views.Get().OpenTrades(tt)
+				err := views.Get().OpenDashboard(tt)
 				if err != nil {
 					fmt.Println(err)
 				}

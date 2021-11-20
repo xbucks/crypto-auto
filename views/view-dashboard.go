@@ -14,7 +14,7 @@ import (
 	"github.com/zserge/lorca"
 )
 
-func (v *Views) OpenTrades(tks *services.Tokens) error {
+func (v *Views) OpenDashboard(tks *services.Tokens) error {
 	v.WaitGroup.Add(1)
 	go func(wg *sync.WaitGroup) {
 		defer wg.Done()
@@ -56,7 +56,7 @@ func (v *Views) OpenTrades(tks *services.Tokens) error {
 		}
 		defer ln.Close()
 		go http.Serve(ln, http.FileServer(http.FS(fs)))
-		ui.Load(fmt.Sprintf("http://%s/www/trades.html", ln.Addr()))
+		ui.Load(fmt.Sprintf("http://%s/www/dashboard.html", ln.Addr()))
 
 		// You may use console.log to debug your JS code, it will be printed via
 		// log.Println(). Also exceptions are printed in a similar manner.
