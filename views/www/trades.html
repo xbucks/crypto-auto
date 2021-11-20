@@ -15,11 +15,26 @@
 	</head>
 	<body class="h-100 p-5" onload="start()">
 		<!-- UI layout -->
-		<div class="container h-100 bg-light d-flex flex-column align-items-center p-5">
+		<div class="container h-100 bg-light d-flex flex-column p-5">
 			<h2 class="text-primary font-weight-bold my-5">Tradable Tokens</h2>
-			<div class="d-flex align-items-center mb-4">
-				<span class="text-info prog"></span>
-				<button class="btn btn-primary mx-5 sync">Sync</button>
+			<div class="d-flex align-items-center mb-4 w-100">
+				<span class="text-info mr-auto prog"> </span>
+				<div class="form-group mr-3 mb-0">
+					<select class="form-control">
+						<option>Option1</option>
+						<option>Option2</option>
+						<option>Option3</option>
+					</select>
+				</div>
+				<div class="form-group d-flex align-items-center w-25 mr-3 mb-0">
+					<label class="mr-3" for="min">Min:</label>
+					<input class="form-control" name="min">
+				</div>
+				<div class="form-group w-25 d-flex align-items-center mr-3 mb-0">
+					<label class="mr-3" for="max">Max:</label>
+					<input class="form-control" name="max">
+				</div>
+				<button class="btn btn-primary mr-3 sync">Sync</button>
 				<button class="btn btn-success save">Save</button>
 			</div>
 			<table class="table">
