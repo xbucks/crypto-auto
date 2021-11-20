@@ -79,12 +79,14 @@ func trackPair(pair string, index int, duration int, t *Tokens) {
 		}
 		if isGoingUp {
 			target = "up"
+			fmt.Println("Trending up token ", name, price, average, change, period)
 		}
 		if isGoingDown {
 			target = "down"
+			fmt.Println("Trending down token ", name, price, average, change, period)
 		}
 
-		if isUnStable || isStable {
+		if isUnStable || isStable || isGoingUp || isGoingDown {
 			ct := &Token{
 				target:  target,
 				name:    name,
