@@ -46,9 +46,10 @@ func OnReady() {
 	mSwapDays_7 := mDuration.AddSubMenuItemCheckbox("7 day swaps", "Get recent swaps of 7 dayy", false)
 	systray.AddSeparator()
 	mRefreshPairs := systray.AddMenuItem("Refresh pairs", "Refresh pairs list")
-	mTrendingPairs := systray.AddMenuItem("Trending pairs", "Get all trending pairs")
-	mUnStablePairs := systray.AddMenuItem("Unstable pairs", "Get all unstable pairs")
+	mGoingUpPairs := systray.AddMenuItem("Going up pairs", "Get all going up pairs")
+	mGoingDownPairs := systray.AddMenuItem("Going down pairs", "Get all going down pairs")
 	mStablePairs := systray.AddMenuItem("Stable pairs", "Get all stable pairs")
+	mUnstablePairs := systray.AddMenuItem("Unstable pairs", "Get all unstable pairs")
 	systray.AddSeparator()
 	mDashboard := systray.AddMenuItem("Dashboard", "Opens a simple HTML Hello, World")
 	mKekBrowser := systray.AddMenuItem("KEK in Browser", "Opens Google in a normal browser")
@@ -167,9 +168,10 @@ func OnReady() {
 			swapDuration = 7
 		case <-mRefreshPairs.ClickedCh:
 			services.GetAllPairs(pirc)
-		case <-mTrendingPairs.ClickedCh:
-		case <-mUnStablePairs.ClickedCh:
+		case <-mGoingUpPairs.ClickedCh:
+		case <-mGoingDownPairs.ClickedCh:
 		case <-mStablePairs.ClickedCh:
+		case <-mUnstablePairs.ClickedCh:
 		case <-mDashboard.ClickedCh:
 			err := views.Get().OpenDashboard(tt)
 			if err != nil {
