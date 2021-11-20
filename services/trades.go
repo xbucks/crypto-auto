@@ -7,7 +7,7 @@ import (
 	"github.com/hirokimoto/crypto-auto/utils"
 )
 
-func AnalyzePairs(command <-chan string, progress chan<- int, t *Tokens) {
+func AnalyzePairs(command <-chan string, progress chan<- int, duration int, t *Tokens) {
 	pairs, _ := ReadAllPairs()
 	t.SetTotal(len(pairs))
 	var status = "Play"
@@ -25,16 +25,20 @@ func AnalyzePairs(command <-chan string, progress chan<- int, t *Tokens) {
 			}
 		default:
 			if status == "Play" {
-				trackPair(pair, index, t)
+				trackPair(pair, index, duration, t)
 			}
 		}
 		progress <- index
 	}
 }
 
-func trackPair(pair string, index int, t *Tokens) {
+func trackPair(pair string, index int, duration int, t *Tokens) {
 	ch := make(chan string, 1)
-	go utils.SwapsByCounts(ch, 1000, pair)
+	if duration > 100 {
+		go utils.SwapsByCounts(ch, duration, pair)
+	} else {
+		go utils.SwapsByDays(ch, duration, pair)
+	}
 
 	msg := <-ch
 	var swaps utils.Swaps

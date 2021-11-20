@@ -12,7 +12,7 @@ import (
 
 var autoPrice float64 = 0.0
 
-func Startup(command <-chan string) {
+func Startup(command <-chan string, alert float64) {
 	var status = "Play"
 	for {
 		select {

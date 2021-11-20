@@ -61,13 +61,17 @@ func OnReady() {
 	sigc := make(chan os.Signal, 1)
 	signal.Notify(sigc, syscall.SIGTERM, syscall.SIGINT)
 
+	// Tray configuration
+	alertChange := 0.0
+	swapDuration := 1000
+
 	money := accounting.Accounting{Symbol: "$", Precision: 2}
 	ethc := make(chan string, 1)
 	btcc := make(chan string, 1)
 	pirc := make(chan int, 1)
 
 	command1 := make(chan string)
-	go services.Startup(command1)
+	go services.Startup(command1, alertChange)
 
 	command2 := make(chan string)
 	progress2 := make(chan int)
@@ -81,7 +85,7 @@ func OnReady() {
 		case <-mBTC.ClickedCh:
 			services.TrackBTC(btcc)
 		case <-mStart.ClickedCh:
-			go services.AnalyzePairs(command2, progress2, tt)
+			go services.AnalyzePairs(command2, progress2, swapDuration, tt)
 		case <-mPause.ClickedCh:
 			command1 <- "Pause"
 			command2 <- "Pause"
@@ -94,21 +98,25 @@ func OnReady() {
 			mAlerts10.Uncheck()
 			mAlerts15.Uncheck()
 			mAlerts20.Uncheck()
+			alertChange = 0.0
 		case <-mAlerts10.ClickedCh:
 			mAlertsAny.Uncheck()
 			mAlerts10.Check()
 			mAlerts15.Uncheck()
 			mAlerts20.Uncheck()
+			alertChange = 0.1
 		case <-mAlerts15.ClickedCh:
 			mAlertsAny.Uncheck()
 			mAlerts10.Uncheck()
 			mAlerts15.Check()
 			mAlerts20.Uncheck()
+			alertChange = 0.15
 		case <-mAlerts20.ClickedCh:
 			mAlertsAny.Uncheck()
 			mAlerts10.Uncheck()
 			mAlerts15.Uncheck()
 			mAlerts20.Check()
+			alertChange = 0.2
 		case <-mSwapCounts_1000.ClickedCh:
 			mSwapCounts_1000.Check()
 			mSwapCounts_3000.Uncheck()
@@ -116,6 +124,7 @@ func OnReady() {
 			mSwapDays_1.Uncheck()
 			mSwapDays_3.Uncheck()
 			mSwapDays_7.Uncheck()
+			swapDuration = 1000
 		case <-mSwapCounts_3000.ClickedCh:
 			mSwapCounts_1000.Uncheck()
 			mSwapCounts_3000.Check()
@@ -123,6 +132,7 @@ func OnReady() {
 			mSwapDays_1.Uncheck()
 			mSwapDays_3.Uncheck()
 			mSwapDays_7.Uncheck()
+			swapDuration = 3000
 		case <-mSwapCounts_9000.ClickedCh:
 			mSwapCounts_1000.Uncheck()
 			mSwapCounts_3000.Uncheck()
@@ -130,6 +140,7 @@ func OnReady() {
 			mSwapDays_1.Uncheck()
 			mSwapDays_3.Uncheck()
 			mSwapDays_7.Uncheck()
+			swapDuration = 9000
 		case <-mSwapDays_1.ClickedCh:
 			mSwapCounts_1000.Uncheck()
 			mSwapCounts_3000.Uncheck()
@@ -137,6 +148,7 @@ func OnReady() {
 			mSwapDays_1.Check()
 			mSwapDays_3.Uncheck()
 			mSwapDays_7.Uncheck()
+			swapDuration = 1
 		case <-mSwapDays_3.ClickedCh:
 			mSwapCounts_1000.Uncheck()
 			mSwapCounts_3000.Uncheck()
@@ -144,6 +156,7 @@ func OnReady() {
 			mSwapDays_1.Uncheck()
 			mSwapDays_3.Check()
 			mSwapDays_7.Uncheck()
+			swapDuration = 3
 		case <-mSwapDays_7.ClickedCh:
 			mSwapCounts_1000.Uncheck()
 			mSwapCounts_3000.Uncheck()
@@ -151,6 +164,7 @@ func OnReady() {
 			mSwapDays_1.Uncheck()
 			mSwapDays_3.Uncheck()
 			mSwapDays_7.Check()
+			swapDuration = 7
 		case <-mRefreshPairs.ClickedCh:
 			services.GetAllPairs(pirc)
 		case <-mTrendingPairs.ClickedCh:
