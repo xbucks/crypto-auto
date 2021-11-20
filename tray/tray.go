@@ -83,8 +83,6 @@ func OnReady() {
 			services.TrackBTC(btcc)
 		case <-mStart.ClickedCh:
 			go services.AnalyzePairs(command2, progress2, tt)
-			command1 <- "Play"
-			command2 <- "Play"
 		case <-mPause.ClickedCh:
 			command1 <- "Pause"
 			command2 <- "Pause"
