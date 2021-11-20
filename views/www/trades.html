@@ -3,59 +3,46 @@
 	<head>
 		<title>Tradable Tokens</title>
 		<link rel="shortcut icon" href="favicon.png">
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 		<style>
-		* { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
-		body { height: 100vh; display: flex; align-items: center; justify-content: center; background-color: #f1c40f; font-family: 'Helvetika Neue', Arial, sans-serif; font-size: 18px; }
-		.counter-container { display: flex; flex-direction: column; align-items: center; }
-		.counter { text-transform: uppercase; color: #fff; font-weight: bold; font-size: 3rem; }
-		.controls { display: flex; align-items: center; justify-content: space-between; min-width: 400px; }
-		.progress { text-transform: uppercase; color: #fff; font-weight: bold; font-size: 2rem; width: 100px; margin: 0 20px; }
-		.sync { cursor: pointer; padding: 1em; border-radius: 5px; text-align: center; box-shadow: 0 6px #8b5e00; color: white; background-color: #E4B702; position: relative; font-weight: bold; }
-		.sync:hover { box-shadow: 0 4px #8b5e00; top: 2px; }
-		.sync:active{ box-shadow: 0 1px #8b5e00; top: 5px; }
-		.save { cursor: pointer; padding: 1em; border-radius: 5px; text-align: center; box-shadow: 0 6px #8b5e00; color: white; background-color: #E4B702; position: relative; font-weight: bold; }
-		.save:hover { box-shadow: 0 4px #8b5e00; top: 2px; }
-		.save:active{ box-shadow: 0 1px #8b5e00; top: 5px; }
-		.tokens { color: white; font-size: 16px; max-height: 90vh; overflow-y: scroll; }
-		.token { display: flex; height: 50px; }
-		.name { width: 200px; }
-		.address { overflow: hidden; text-overflow: ellipsis; width: 200px; }
-		.max { width: 100px; }
-		.min { width: 100px; }
-		.price { width: 100px; }
-		.change { width: 200px; }
-		.period { width: 100px; }
-		.btn { cursor: pointer; padding: 1em; border-radius: 5px; text-align: center; box-shadow: 0 6px #8b5e00; color: white; background-color: #E4B702; position: relative; font-weight: bold; }
-		.btn:hover { box-shadow: 0 4px #8b5e00; top: 2px; }
-		.btn:active{ box-shadow: 0 1px #8b5e00; top: 5px; }
 		</style>
 	</head>
 	<body onload="start()">
 		<!-- UI layout -->
-		<div class="counter-container">
-			<div class="counter">Tradable tokens</div>
-			<div class="controls">
-				<div class="progress"></div>
-				<div class="sync">Sync</div>
-				<div class="save">Save</div>
+		<div class="container min-vh-100 bg-light d-flex flex-column align-items-center p-5">
+			<h2 class="text-primary bold my-5">Tradable Tokens</h2>
+			<div class="d-flex align-items-center mb-4">
+				<span class="text-info prog"></span>
+				<button class="btn btn-primary mx-5 sync">Sync</button>
+				<button class="btn btn-success save">Save</button>
 			</div>
-			<div class="tokens">
-				<div class="token">
-					<span class="name">Name</span>
-					<span class="address">Address</span>
-					<span class="price">Price</span>
-					<span class="max">Max</span>
-					<span class="min">Min</span>
-					<span class="change">Change</span>
-					<span class="period">Period</span>
-				</div>
-			</div>
+			<table class="table">
+				<thead>
+					<tr class="table-info">
+						<th>Name</th>
+						<th>Address</th>
+						<th>Price</th>
+						<th>Max</th>
+						<th>Min</th>
+						<th>Change</th>
+						<th>Period</th>
+						<th />
+					</tr>
+				</thead>
+				<tbody class="tokens">
+				</tbody>
+			</table>
 		</div>
 
 		<!-- Connect UI actions to Go functions -->
 		<script>
 			const data = document.querySelector('.tokens');
-			const progress = document.querySelector('.progress');
+			const progress = document.querySelector('.prog');
 			const save = document.querySelector('.save');
 			const sync = document.querySelector('.sync');
 
@@ -79,20 +66,19 @@
 					const percent =  Math.round(100 * change / price, 2)
 					const row = document.getElementById(`token-${i}`)
 					if (!row) {
-						data.innerHTML = data.innerHTML + `
-							<div id="token-${i}" class="token">
-								<span class="name">${name}</span>
-								<a
-									class="address"
-									href="https://www.dextools.io/app/ether/pair-explorer/${address}"
-								>${address}</a>
-								<span class="price">${price}$</span>
-								<span class="max">${max}$</span>
-								<span class="min">${min}$</span>
-								<span class="change">${change}$ / ${percent}%</span>
-								<span class="period">${period} hours</span>
-								<div id="${address}" class="btn">+/-</div>
-							</div>
+						data.innerHTML += `
+							<tr id="token-${i}" class="table-dark text-dark">
+								<td>${name}</td>
+								<td>
+									<a class="address" href="https://www.dextools.io/app/ether/pair-explorer/${address}">${address}</a>
+								</td>
+								<td>${price}$</td>
+								<td>${max}$</td>
+								<td>${min}$</td>
+								<td>${change}$ / ${percent}%</td>
+								<td>${period} hours</td>
+								<td><button id="${address}" class="btn btn-primary py-0">+/-</button></td>
+							</tr>
 						`
 					}
 					const btnSync = document.getElementById(address);
