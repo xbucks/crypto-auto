@@ -32,13 +32,29 @@ func OnReady() {
 	mPause := systray.AddMenuItem("Pause", "Pause background services")
 	mStop := systray.AddMenuItem("Stop", "Stop background services")
 	systray.AddSeparator()
-	mRefreshPairs := systray.AddMenuItem("Refresh pairs", "Get all available pairs")
-	mTradePairs := systray.AddMenuItem("Tradable pairs", "Get all tradable pairs")
+	mAlerts := systray.AddMenuItem("Alerts", "Alert changes")
+	mAlertsAny := mAlerts.AddSubMenuItemCheckbox("Any changes", "Alert any changes", true)
+	mAlerts10 := mAlerts.AddSubMenuItemCheckbox("> 10%"+" changes", "Alert changes than 10%", false)
+	mAlerts15 := mAlerts.AddSubMenuItemCheckbox("> 15%"+" changes", "Alert changes than 15%", false)
+	mAlerts20 := mAlerts.AddSubMenuItemCheckbox("> 20%"+" changes", "Alert changes than 20%", false)
+	mDuration := systray.AddMenuItem("Duration", "Get swaps by duration")
+	mSwapCounts_1000 := mDuration.AddSubMenuItemCheckbox("1000 swaps", "Get recent 1000 swaps", true)
+	mSwapCounts_3000 := mDuration.AddSubMenuItemCheckbox("3000 swaps", "Get recent 3000 swaps", false)
+	mSwapCounts_9000 := mDuration.AddSubMenuItemCheckbox("9000 swaps", "Get recent 9000 swaps", false)
+	mSwapDays_1 := mDuration.AddSubMenuItemCheckbox("1 day swaps", "Get recent swaps of 1 day", false)
+	mSwapDays_3 := mDuration.AddSubMenuItemCheckbox("3 day swaps", "Get recent swaps of 3 days", false)
+	mSwapDays_7 := mDuration.AddSubMenuItemCheckbox("7 day swaps", "Get recent swaps of 7 dayy", false)
 	systray.AddSeparator()
-	mDashboard := systray.AddMenuItem("Open Dashboard", "Opens a simple HTML Hello, World")
+	mRefreshPairs := systray.AddMenuItem("Refresh pairs", "Refresh pairs list")
+	mTrendingPairs := systray.AddMenuItem("Trending pairs", "Get all trending pairs")
+	mUnStablePairs := systray.AddMenuItem("Unstable pairs", "Get all unstable pairs")
+	mStablePairs := systray.AddMenuItem("Stable pairs", "Get all stable pairs")
+	systray.AddSeparator()
+	mDashboard := systray.AddMenuItem("Dashboard", "Opens a simple HTML Hello, World")
+	mTrades := systray.AddMenuItem("Trades", "Show all tradable pairs")
 	mKekBrowser := systray.AddMenuItem("KEK in Browser", "Opens Google in a normal browser")
 	mDexEmbed := systray.AddMenuItem("DEX in Window", "Opens Google in a custom window")
-	mTrades := systray.AddMenuItem("Tradable tokens", "Find tradable tokens")
+	systray.AddSeparator()
 	mSettings := systray.AddMenuItem("Settings", "Opens Google in a custom window")
 	systray.AddSeparator()
 	mQuit := systray.AddMenuItem("Quit", "Quit example tray application")
@@ -66,6 +82,7 @@ func OnReady() {
 		case <-mBTC.ClickedCh:
 			services.TrackBTC(btcc)
 		case <-mStart.ClickedCh:
+			go services.AnalyzePairs(command2, progress2, tt)
 			command1 <- "Play"
 			command2 <- "Play"
 		case <-mPause.ClickedCh:
@@ -74,10 +91,74 @@ func OnReady() {
 		case <-mStop.ClickedCh:
 			command1 <- "Stop"
 			command2 <- "Stop"
+		case <-mAlerts.ClickedCh:
+		case <-mAlertsAny.ClickedCh:
+			mAlertsAny.Check()
+			mAlerts10.Uncheck()
+			mAlerts15.Uncheck()
+			mAlerts20.Uncheck()
+		case <-mAlerts10.ClickedCh:
+			mAlertsAny.Uncheck()
+			mAlerts10.Check()
+			mAlerts15.Uncheck()
+			mAlerts20.Uncheck()
+		case <-mAlerts15.ClickedCh:
+			mAlertsAny.Uncheck()
+			mAlerts10.Uncheck()
+			mAlerts15.Check()
+			mAlerts20.Uncheck()
+		case <-mAlerts20.ClickedCh:
+			mAlertsAny.Uncheck()
+			mAlerts10.Uncheck()
+			mAlerts15.Uncheck()
+			mAlerts20.Check()
+		case <-mSwapCounts_1000.ClickedCh:
+			mSwapCounts_1000.Check()
+			mSwapCounts_3000.Uncheck()
+			mSwapCounts_9000.Uncheck()
+			mSwapDays_1.Uncheck()
+			mSwapDays_3.Uncheck()
+			mSwapDays_7.Uncheck()
+		case <-mSwapCounts_3000.ClickedCh:
+			mSwapCounts_1000.Uncheck()
+			mSwapCounts_3000.Check()
+			mSwapCounts_9000.Uncheck()
+			mSwapDays_1.Uncheck()
+			mSwapDays_3.Uncheck()
+			mSwapDays_7.Uncheck()
+		case <-mSwapCounts_9000.ClickedCh:
+			mSwapCounts_1000.Uncheck()
+			mSwapCounts_3000.Uncheck()
+			mSwapCounts_9000.Check()
+			mSwapDays_1.Uncheck()
+			mSwapDays_3.Uncheck()
+			mSwapDays_7.Uncheck()
+		case <-mSwapDays_1.ClickedCh:
+			mSwapCounts_1000.Uncheck()
+			mSwapCounts_3000.Uncheck()
+			mSwapCounts_9000.Uncheck()
+			mSwapDays_1.Check()
+			mSwapDays_3.Uncheck()
+			mSwapDays_7.Uncheck()
+		case <-mSwapDays_3.ClickedCh:
+			mSwapCounts_1000.Uncheck()
+			mSwapCounts_3000.Uncheck()
+			mSwapCounts_9000.Uncheck()
+			mSwapDays_1.Uncheck()
+			mSwapDays_3.Check()
+			mSwapDays_7.Uncheck()
+		case <-mSwapDays_7.ClickedCh:
+			mSwapCounts_1000.Uncheck()
+			mSwapCounts_3000.Uncheck()
+			mSwapCounts_9000.Uncheck()
+			mSwapDays_1.Uncheck()
+			mSwapDays_3.Uncheck()
+			mSwapDays_7.Check()
 		case <-mRefreshPairs.ClickedCh:
 			services.GetAllPairs(pirc)
-		case <-mTradePairs.ClickedCh:
-			go services.TradePairs(command2, progress2, tt)
+		case <-mTrendingPairs.ClickedCh:
+		case <-mUnStablePairs.ClickedCh:
+		case <-mStablePairs.ClickedCh:
 		case <-mDashboard.ClickedCh:
 			err := views.Get().OpenIndex()
 			if err != nil {
@@ -122,7 +203,7 @@ func OnReady() {
 			msg := <-pirc
 			mRefreshPairs.SetTitle(fmt.Sprintf("Refreshing pairs %d...", msg))
 		case <-progress2:
-			mTradePairs.SetTitle(fmt.Sprintf("Tradable pairs %d/%d", tt.GetProgress(), tt.GetTotal()))
+			mStart.SetTitle(fmt.Sprintf("Working on %d of %d", tt.GetProgress(), tt.GetTotal()))
 			if tt.GetTotal() == tt.GetProgress() {
 				err := views.Get().OpenTrades(tt)
 				if err != nil {

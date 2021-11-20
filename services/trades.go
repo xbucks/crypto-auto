@@ -7,7 +7,7 @@ import (
 	"github.com/hirokimoto/crypto-auto/utils"
 )
 
-func TradePairs(command <-chan string, progress chan<- int, t *Tokens) {
+func AnalyzePairs(command <-chan string, progress chan<- int, t *Tokens) {
 	pairs, _ := ReadAllPairs()
 	t.SetTotal(len(pairs))
 	var status = "Play"
