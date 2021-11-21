@@ -44,7 +44,10 @@ func trackMainPair() {
 }
 
 func trackSubPairs() {
-	pairs := []string{"0x22527f92f43dc8bea6387ce40b87ebaa21f51df3", "0x684b00a5773679f88598a19976fbeb25a68e9a5f"}
+	pairs := []string{
+		"0x22527f92f43dc8bea6387ce40b87ebaa21f51df3",
+		"0x684b00a5773679f88598a19976fbeb25a68e9a5f",
+		"0xc88ac988a655b91b70def427c8778b4d43f2048d"}
 	for _, v := range pairs {
 		trackOnePair(v, "sub")
 	}
