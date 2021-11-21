@@ -235,7 +235,7 @@ func OnReady() {
 		case <-progress2:
 			msg := <-progress2
 			mStart.SetTitle(fmt.Sprintf("Working on %d of %d", msg, tt.GetTotal()))
-			if tt.GetTotal() == msg {
+			if msg > tt.GetTotal()-2 {
 				services.Notify("Crypto Auto", "Completed analyzing!", "", gosxnotifier.Bottle)
 				mStart.SetTitle("Start")
 				mStart.Enable()

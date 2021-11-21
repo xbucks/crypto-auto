@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"math"
+	"sync"
 
-	gosxnotifier "github.com/deckarep/gosx-notifier"
 	"github.com/hirokimoto/crypto-auto/utils"
 )
 
@@ -27,14 +27,16 @@ func AnalyzePairs(command <-chan string, progress chan<- int, duration int, t *T
 			}
 		default:
 			if status == "Play" {
-				trackPair(pair, index, duration, t)
+				trackPair(pair, index, duration, t, progress)
 			}
 		}
-		progress <- index
 	}
 }
 
-func trackPair(pair string, index int, duration int, t *Tokens) {
+func trackPair(pair string, index int, duration int, t *Tokens, progress chan<- int) {
+	var wg sync.WaitGroup
+	wg.Add(1)
+
 	ch := make(chan string, 1)
 	if duration > 100 {
 		go utils.SwapsByCounts(ch, duration, pair)
@@ -70,12 +72,12 @@ func trackPair(pair string, index int, duration int, t *Tokens) {
 		target := ""
 		if isUnStable {
 			target = "unstable"
-			Notify("Unstable token!", fmt.Sprintf("%s %f %f", name, price, change), "https://kek.tools/", gosxnotifier.Blow)
+			// Notify("Unstable token!", fmt.Sprintf("%s %f %f", name, price, change), "https://kek.tools/", gosxnotifier.Blow)
 			fmt.Println("Unstable token ", name, price, average, change, period)
 		}
 		if isStable {
 			target = "stable"
-			Notify("Stable token!", fmt.Sprintf("%s %f %f", name, price, change), "https://kek.tools/", gosxnotifier.Blow)
+			// Notify("Stable token!", fmt.Sprintf("%s %f %f", name, price, change), "https://kek.tools/", gosxnotifier.Blow)
 			fmt.Println("Stable token ", name, price, average, change, period)
 		}
 		if isGoingUp {
@@ -104,4 +106,7 @@ func trackPair(pair string, index int, duration int, t *Tokens) {
 	}
 	t.SetProgress(index)
 	fmt.Print(index, "|")
+
+	defer wg.Done()
+	progress <- index
 }

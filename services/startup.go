@@ -73,7 +73,7 @@ func trackOnePair(address string, target string) {
 
 	msg := <-cc
 	json.Unmarshal([]byte(msg), &swaps)
-	n, p, c, d, _, a := SwapsInfo(swaps, 0.1)
+	n, p, c, d, _, _ := SwapsInfo(swaps, 0.1)
 
 	price := money.FormatMoney(p)
 	change := money.FormatMoney(c)
