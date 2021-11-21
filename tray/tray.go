@@ -233,8 +233,12 @@ func OnReady() {
 				mRefreshPairs.SetTitle(fmt.Sprintf("Refreshing %d", msg))
 			}
 		case <-progress2:
-			mStart.SetTitle(fmt.Sprintf("Working on %d of %d", tt.GetProgress(), tt.GetTotal()))
-			if tt.GetTotal() == tt.GetProgress() {
+			msg := <-progress2
+			mStart.SetTitle(fmt.Sprintf("Working on %d of %d", msg, tt.GetTotal()))
+			if tt.GetTotal() == msg {
+				services.Notify("Crypto Auto", "Completed analyzing!", "", gosxnotifier.Bottle)
+				mStart.SetTitle("Start")
+				mStart.Enable()
 				err := views.Get().OpenDashboard(tt)
 				if err != nil {
 					fmt.Println(err)
