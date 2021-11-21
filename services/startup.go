@@ -3,6 +3,7 @@ package services
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"time"
 
 	gosxnotifier "github.com/deckarep/gosx-notifier"
@@ -40,7 +41,8 @@ func trackMainPair() {
 	money := accounting.Accounting{Symbol: "$", Precision: 6}
 	cc := make(chan string, 1)
 	var swaps utils.Swaps
-	go utils.SwapsByCounts(cc, 2, "0x7a99822968410431edd1ee75dab78866e31caf39")
+	address := os.Getenv("MAIN_PAIR")
+	go utils.SwapsByCounts(cc, 2, address)
 
 	msg := <-cc
 	json.Unmarshal([]byte(msg), &swaps)
