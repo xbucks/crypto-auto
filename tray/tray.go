@@ -10,6 +10,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	gosxnotifier "github.com/deckarep/gosx-notifier"
 	"github.com/getlantern/systray"
 	"github.com/hirokimoto/crypto-auto/services"
 	"github.com/hirokimoto/crypto-auto/utils"
@@ -90,14 +91,18 @@ func OnReady() {
 		case <-mBTC.ClickedCh:
 			services.TrackBTC(btcc)
 		case <-mStart.ClickedCh:
+			mStart.Disable()
 			go services.AnalyzePairs(command2, progress2, swapDuration, tt)
 		case <-mPause.ClickedCh:
+			mStart.Enable()
 			command1 <- "Pause"
 			command2 <- "Pause"
 		case <-mStop.ClickedCh:
+			mStart.Enable()
 			command1 <- "Stop"
 			command2 <- "Stop"
 		case <-mRefreshPairs.ClickedCh:
+			mRefreshPairs.Disable()
 			services.GetAllPairs(pirc)
 		case <-mWatchPairs.ClickedCh:
 			if mWatchPairs.Checked() {
@@ -219,7 +224,11 @@ func OnReady() {
 			fmt.Println("BTC Price: ", price)
 		case <-pirc:
 			msg := <-pirc
-			mRefreshPairs.SetTitle(fmt.Sprintf("Refreshing pairs %d...", msg))
+			if msg < 0 {
+				mRefreshPairs.SetTitle("Refresh")
+			} else {
+				services.Notify("Crypto Auto", "Completed refreshing pairs!", "", gosxnotifier.Bottle)
+			}
 		case <-progress2:
 			mStart.SetTitle(fmt.Sprintf("Working on %d of %d", tt.GetProgress(), tt.GetTotal()))
 			if tt.GetTotal() == tt.GetProgress() {
