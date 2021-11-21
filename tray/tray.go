@@ -33,6 +33,9 @@ func OnReady() {
 	mStop := systray.AddMenuItem("Stop", "Stop background services")
 	systray.AddSeparator()
 	mRefreshPairs := systray.AddMenuItem("Refresh", "Refresh pairs list")
+	mWatchPairs := systray.AddMenuItemCheckbox("Watches", "Watch mutiple pairs at the same time", false)
+	mWatchPairs.AddSubMenuItemCheckbox("RON Token", "Watch RON token", true)
+	mWatchPairs.AddSubMenuItemCheckbox("STRIP Token", "Watch STRIP token", true)
 	systray.AddSeparator()
 	mAlerts := systray.AddMenuItem("Alerts", "Alert changes")
 	mAlertsAny := mAlerts.AddSubMenuItemCheckbox("Any changes", "Alert any changes", true)
@@ -96,6 +99,12 @@ func OnReady() {
 			command2 <- "Stop"
 		case <-mRefreshPairs.ClickedCh:
 			services.GetAllPairs(pirc)
+		case <-mWatchPairs.ClickedCh:
+			if mWatchPairs.Checked() {
+				mWatchPairs.Uncheck()
+			} else {
+				mWatchPairs.Check()
+			}
 		case <-mAlerts.ClickedCh:
 		case <-mAlertsAny.ClickedCh:
 			mAlertsAny.Check()
