@@ -54,8 +54,12 @@ func trackMainPair() {
 
 	systray.SetTitle(fmt.Sprintf("%s|%f", n, p))
 	t := time.Now()
-	fmt.Println(t.Format("2006/01/02 15:04:05"), ": ", n, price, change, duration, a)
+	fmt.Print(".")
 
-	message := fmt.Sprintf("%s: %s %s %s", n, price, change, duration)
-	Notify("Price changed!", message, "https://kek.tools/", gosxnotifier.Default)
+	if p != autoPrice {
+		message := fmt.Sprintf("%s: %s %s %s", n, price, change, duration)
+		Notify("Price changed!", message, "https://kek.tools/", gosxnotifier.Default)
+		fmt.Println(t.Format("2006/01/02 15:04:05"), ": ", n, price, change, duration, a)
+	}
+	autoPrice = p
 }
