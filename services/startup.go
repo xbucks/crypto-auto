@@ -76,11 +76,12 @@ func trackOnePair(address string, target string) {
 		if c < 0 {
 			title = "Price changed down!"
 		}
+		link := fmt.Sprintf("https://www.dextools.io/app/ether/pair-explorer/%s", address)
 		if target == "main" {
 			systray.SetTitle(fmt.Sprintf("%s|%f", n, p))
-			Notify(title, message, "https://kek.tools/", gosxnotifier.Default)
+			Notify(title, message, link, gosxnotifier.Default)
 		} else {
-			Notify(title, message, "https://kek.tools/", gosxnotifier.Glass)
+			Notify(title, message, link, gosxnotifier.Glass)
 		}
 		fmt.Println(".")
 		fmt.Println(t.Format("2006/01/02 15:04:05"), ": ", n, price, change, duration, a)
