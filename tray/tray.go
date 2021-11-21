@@ -102,6 +102,7 @@ func OnReady() {
 			command1 <- "Stop"
 			command2 <- "Stop"
 		case <-mRefreshPairs.ClickedCh:
+			mRefreshPairs.SetTitle("Refreshing 1")
 			mRefreshPairs.Disable()
 			services.GetAllPairs(pirc)
 		case <-mWatchPairs.ClickedCh:
@@ -226,8 +227,10 @@ func OnReady() {
 			msg := <-pirc
 			if msg < 0 {
 				mRefreshPairs.SetTitle("Refresh")
-			} else {
+				mRefreshPairs.Enable()
 				services.Notify("Crypto Auto", "Completed refreshing pairs!", "", gosxnotifier.Bottle)
+			} else {
+				mRefreshPairs.SetTitle(fmt.Sprintf("Refreshing %d", msg))
 			}
 		case <-progress2:
 			mStart.SetTitle(fmt.Sprintf("Working on %d of %d", tt.GetProgress(), tt.GetTotal()))

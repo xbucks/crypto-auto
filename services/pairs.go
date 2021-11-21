@@ -57,14 +57,14 @@ func GetAllPairs(target chan int) {
 			var pairs utils.Pairs
 			json.Unmarshal([]byte(msg), &pairs)
 			counts := len(pairs.Data.Pairs)
-			fmt.Println(skip, " : ", counts)
+			fmt.Println(skip, ": ", counts)
 			if counts == 0 {
-				target <- -1
 				return
 			}
 			SaveAllPairs(&pairs)
 			skip += 1
 			target <- skip
+			time.Sleep(time.Second * 1)
 		}
 	}()
 }
