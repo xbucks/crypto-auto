@@ -59,6 +59,8 @@ func GetAllPairs(target chan int) {
 			counts := len(pairs.Data.Pairs)
 			fmt.Println(skip, ": ", counts)
 			if counts == 0 {
+				target <- -1
+				time.Sleep(time.Second * 1)
 				return
 			}
 			SaveAllPairs(&pairs)
