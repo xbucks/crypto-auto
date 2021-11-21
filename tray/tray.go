@@ -32,6 +32,8 @@ func OnReady() {
 	mPause := systray.AddMenuItem("Pause", "Pause background services")
 	mStop := systray.AddMenuItem("Stop", "Stop background services")
 	systray.AddSeparator()
+	mRefreshPairs := systray.AddMenuItem("Refresh", "Refresh pairs list")
+	systray.AddSeparator()
 	mAlerts := systray.AddMenuItem("Alerts", "Alert changes")
 	mAlertsAny := mAlerts.AddSubMenuItemCheckbox("Any changes", "Alert any changes", true)
 	mAlerts10 := mAlerts.AddSubMenuItemCheckbox("> 10%"+" changes", "Alert changes than 10%", false)
@@ -45,13 +47,12 @@ func OnReady() {
 	mSwapDays_3 := mDuration.AddSubMenuItemCheckbox("3 day swaps", "Get recent swaps of 3 days", false)
 	mSwapDays_7 := mDuration.AddSubMenuItemCheckbox("7 day swaps", "Get recent swaps of 7 dayy", false)
 	systray.AddSeparator()
-	mRefreshPairs := systray.AddMenuItem("Refresh pairs", "Refresh pairs list")
+	mDashboard := systray.AddMenuItem("Dashboard", "Opens a simple HTML Hello, World")
 	mGoingUpPairs := systray.AddMenuItem("Going up pairs", "Get all going up pairs")
 	mGoingDownPairs := systray.AddMenuItem("Going down pairs", "Get all going down pairs")
 	mStablePairs := systray.AddMenuItem("Stable pairs", "Get all stable pairs")
 	mUnstablePairs := systray.AddMenuItem("Unstable pairs", "Get all unstable pairs")
 	systray.AddSeparator()
-	mDashboard := systray.AddMenuItem("Dashboard", "Opens a simple HTML Hello, World")
 	mKekBrowser := systray.AddMenuItem("KEK in Browser", "Opens Google in a normal browser")
 	mDexEmbed := systray.AddMenuItem("DEX in Window", "Opens Google in a custom window")
 	systray.AddSeparator()
@@ -93,6 +94,8 @@ func OnReady() {
 		case <-mStop.ClickedCh:
 			command1 <- "Stop"
 			command2 <- "Stop"
+		case <-mRefreshPairs.ClickedCh:
+			services.GetAllPairs(pirc)
 		case <-mAlerts.ClickedCh:
 		case <-mAlertsAny.ClickedCh:
 			mAlertsAny.Check()
@@ -166,17 +169,15 @@ func OnReady() {
 			mSwapDays_3.Uncheck()
 			mSwapDays_7.Check()
 			swapDuration = 7
-		case <-mRefreshPairs.ClickedCh:
-			services.GetAllPairs(pirc)
-		case <-mGoingUpPairs.ClickedCh:
-		case <-mGoingDownPairs.ClickedCh:
-		case <-mStablePairs.ClickedCh:
-		case <-mUnstablePairs.ClickedCh:
 		case <-mDashboard.ClickedCh:
 			err := views.Get().OpenDashboard(tt)
 			if err != nil {
 				fmt.Println(err)
 			}
+		case <-mGoingUpPairs.ClickedCh:
+		case <-mGoingDownPairs.ClickedCh:
+		case <-mStablePairs.ClickedCh:
+		case <-mUnstablePairs.ClickedCh:
 		case <-mKekBrowser.ClickedCh:
 			err := open.Run("https://www.google.com")
 			if err != nil {
