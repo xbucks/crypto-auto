@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	gosxnotifier "github.com/deckarep/gosx-notifier"
 	"github.com/getlantern/systray"
 	"github.com/hirokimoto/crypto-auto/utils"
 	"github.com/leekchan/accounting"
@@ -55,7 +56,7 @@ func trackMainPair() {
 
 	if p != autoPrice {
 		message := fmt.Sprintf("%s: %s %s %s", n, price, change, duration)
-		Notify("Price changed!", message, "https://kek.tools/")
+		Notify("Price changed!", message, "https://kek.tools/", gosxnotifier.Default)
 	}
 	autoPrice = p
 }

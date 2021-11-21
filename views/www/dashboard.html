@@ -104,6 +104,7 @@
 						`
 						const btnSync = document.getElementById(address);
 						btnSync.addEventListener('click', async () => {
+							console.log(address)
 							await addPair(address);
 						});
 					}

@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	gosxnotifier "github.com/deckarep/gosx-notifier"
 	"github.com/getlantern/systray"
 	"github.com/hirokimoto/crypto-auto/utils"
 	"github.com/leekchan/accounting"
@@ -37,7 +38,7 @@ func TrackPairs() {
 			if p != olds[0] {
 				message := fmt.Sprintf("%s: %s %s %s", n, price, change, duration)
 				url := "https://kek.tools/t/0x295b42684f90c77da7ea46336001010f2791ec8c?pair=0x7a99822968410431edd1ee75dab78866e31caf39"
-				Notify("Price changed!", message, url)
+				Notify("Price changed!", message, url, gosxnotifier.Default)
 			}
 			olds[0] = p
 

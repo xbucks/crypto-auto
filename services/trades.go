@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 
+	gosxnotifier "github.com/deckarep/gosx-notifier"
 	"github.com/hirokimoto/crypto-auto/utils"
 )
 
@@ -69,12 +70,12 @@ func trackPair(pair string, index int, duration int, t *Tokens) {
 		target := ""
 		if isUnStable {
 			target = "unstable"
-			Notify("Unstable token!", fmt.Sprintf("%s %f %f", name, price, change), "https://kek.tools/")
+			Notify("Unstable token!", fmt.Sprintf("%s %f %f", name, price, change), "https://kek.tools/", gosxnotifier.Blow)
 			fmt.Println("Unstable token ", name, price, average, change, period)
 		}
 		if isStable {
 			target = "stable"
-			Notify("Stable token!", fmt.Sprintf("%s %f %f", name, price, change), "https://kek.tools/")
+			Notify("Stable token!", fmt.Sprintf("%s %f %f", name, price, change), "https://kek.tools/", gosxnotifier.Blow)
 			fmt.Println("Stable token ", name, price, average, change, period)
 		}
 		if isGoingUp {
