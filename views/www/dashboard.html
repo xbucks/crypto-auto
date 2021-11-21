@@ -10,12 +10,12 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 		<style>
-			html { height: 100%; }
+			html { min-height: 100%; }
 		</style>
 	</head>
 	<body class="h-100 p-5" onload="start()">
 		<!-- UI layout -->
-		<div class="container h-100 bg-light d-flex flex-column align-items-center p-5">
+		<div class="min-vh-100 bg-light d-flex flex-column align-items-center p-5">
 			<h2 class="text-primary font-weight-bold my-5">Tradable Tokens</h2>
 			<div class="d-flex align-items-center mb-4 w-100">
 				<span class="text-info mr-auto prog"> </span>
@@ -74,6 +74,7 @@
 				} else {
 					progress.innerText = completed / 10 + "%"
 				}
+				data.innerHTML = ""
 				for (var i = 0; i < length; i++) {
 					const target = await window.getItem(i, 'target')
 					const visible = type === "all" ? true : target === type
@@ -87,23 +88,20 @@
 						const change = await window.getItem(i, 'change')
 						const period = await window.getItem(i, 'period')
 						const percent =  Math.round(100 * change / price, 2)
-						const row = document.getElementById(`token-${i}`)
-						if (!row) {
-							data.innerHTML += `
-								<tr id="token-${i}" class="table-dark text-dark">
-									<td>${name}</td>
-									<td>
-										<a class="address" href="https://www.dextools.io/app/ether/pair-explorer/${address}">${address}</a>
-									</td>
-									<td>${price}$</td>
-									<td>${max}$</td>
-									<td>${min}$</td>
-									<td>${change}$ / ${percent}%</td>
-									<td>${period} hours</td>
-									<td><button id="${address}" class="btn btn-primary py-0">+/-</button></td>
-								</tr>
-							`
-						}
+						data.innerHTML += `
+							<tr id="token-${i}" class="table-dark text-dark">
+								<td>${name}</td>
+								<td>
+									<a class="address" href="https://www.dextools.io/app/ether/pair-explorer/${address}">${address}</a>
+								</td>
+								<td>${price}$</td>
+								<td>${max}$</td>
+								<td>${min}$</td>
+								<td>${change}$ / ${percent}%</td>
+								<td>${period} hours</td>
+								<td><button id="${address}" class="btn btn-primary py-0">+/-</button></td>
+							</tr>
+						`
 						const btnSync = document.getElementById(address);
 						btnSync.addEventListener('click', async () => {
 							await addPair(address);
@@ -120,7 +118,6 @@
 			});
 			sel.addEventListener('change', (event) => {
 				render(event.target.value);
-				console.log(event.target.value)
 			});
 		</script>
 	</body>
