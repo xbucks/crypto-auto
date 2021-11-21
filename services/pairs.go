@@ -49,7 +49,11 @@ func TrackPairs() {
 
 func GetAllPairs(target chan int) {
 	skip := 0
-	go func() {
+	var v sync.WaitGroup
+	v.Add(1)
+	go func(wg sync.WaitGroup) {
+		defer wg.Done()
+
 		for {
 			cc := make(chan string, 1)
 			go utils.Post(cc, "pairs", 1000, 1000*skip, "")
@@ -59,16 +63,16 @@ func GetAllPairs(target chan int) {
 			counts := len(pairs.Data.Pairs)
 			fmt.Println(skip, ": ", counts)
 			if counts == 0 {
-				target <- -1
-				time.Sleep(time.Second * 1)
+				target <- 111
 				return
 			}
 			SaveAllPairs(&pairs)
 			skip += 1
 			target <- skip
-			time.Sleep(time.Second * 1)
+			time.Sleep(time.Millisecond * 200)
 		}
-	}()
+	}(v)
+	target <- 111
 }
 
 func trackPairs(wg *sync.WaitGroup, pairs []string, target chan string, limit int) {

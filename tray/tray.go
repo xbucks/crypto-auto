@@ -225,7 +225,7 @@ func OnReady() {
 			fmt.Println("BTC Price: ", price)
 		case <-pirc:
 			msg := <-pirc
-			if msg < 0 {
+			if msg > 100 {
 				mRefreshPairs.SetTitle("Refresh")
 				mRefreshPairs.Enable()
 				services.Notify("Crypto Auto", "Completed refreshing pairs!", "", gosxnotifier.Bottle)
