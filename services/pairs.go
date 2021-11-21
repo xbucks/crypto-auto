@@ -51,7 +51,6 @@ func GetAllPairs(target chan int) {
 	skip := 0
 
 	go func() {
-
 		for {
 			var wg sync.WaitGroup
 			wg.Add(1)
@@ -73,13 +72,4 @@ func GetAllPairs(target chan int) {
 		}
 	}()
 	target <- 111
-}
-
-func trackPairs(wg *sync.WaitGroup, pairs []string, target chan string, limit int) {
-	for _, pair := range pairs {
-		defer wg.Done()
-		go utils.Post(target, "swaps", limit, 0, pair)
-		fmt.Print(".")
-	}
-	time.Sleep(time.Second * 5)
 }
