@@ -67,12 +67,6 @@ func trackOnePair(address string, target string) {
 	change := money.FormatMoney(c)
 	duration := fmt.Sprintf("%.2f hours", d)
 
-	if target == "main" {
-		systray.SetTitle(fmt.Sprintf("%s|%f", n, p))
-	} else {
-
-	}
-
 	fmt.Print(".")
 
 	if p != oldPrices[address] {
@@ -82,8 +76,15 @@ func trackOnePair(address string, target string) {
 		if c < 0 {
 			title = "Price changed down!"
 		}
-		Notify(title, message, "https://kek.tools/", gosxnotifier.Default)
+		if target == "main" {
+			systray.SetTitle(fmt.Sprintf("%s|%f", n, p))
+			Notify(title, message, "https://kek.tools/", gosxnotifier.Default)
+		} else {
+			Notify(title, message, "https://kek.tools/", gosxnotifier.Glass)
+		}
+		fmt.Println(".")
 		fmt.Println(t.Format("2006/01/02 15:04:05"), ": ", n, price, change, duration, a)
+		fmt.Println(".")
 	}
 	oldPrices[address] = p
 }
