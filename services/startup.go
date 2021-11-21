@@ -12,7 +12,7 @@ import (
 	"github.com/leekchan/accounting"
 )
 
-var autoPrice float64 = 0.0
+var oldPrices = map[string]float64{}
 
 func Startup(command <-chan string, alert float64) {
 	var status = "Play"
@@ -60,10 +60,10 @@ func trackOnePair(address string) {
 	t := time.Now()
 	fmt.Print(".")
 
-	if p != autoPrice {
+	if p != oldPrices[address] {
 		message := fmt.Sprintf("%s: %s %s %s", n, price, change, duration)
 		Notify("Price changed!", message, "https://kek.tools/", gosxnotifier.Default)
 		fmt.Println(t.Format("2006/01/02 15:04:05"), ": ", n, price, change, duration, a)
 	}
-	autoPrice = p
+	oldPrices[address] = p
 }
