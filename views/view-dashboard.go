@@ -31,6 +31,7 @@ func (v *Views) OpenDashboard(tks *services.Tokens) error {
 
 		// Create and bind Go object to the UI
 		ui.Bind("addPair", func(t string) {
+			// os.Setenv("MAIN_PAIR", t)
 			fmt.Println(t)
 		})
 		ui.Bind("savePairs", func() {

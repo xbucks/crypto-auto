@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 	<head>
-		<title>Tradable Tokens</title>
+		<title>Dashboard</title>
 		<link rel="shortcut icon" href="favicon.png">
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -102,8 +102,8 @@
 								<td><button id="${address}" class="btn btn-primary py-0">+/-</button></td>
 							</tr>
 						`
-						const btnSync = document.getElementById(address);
-						btnSync.addEventListener('click', async () => {
+						const btnAddRemove = document.getElementById(address);
+						btnAddRemove.addEventListener('click', async () => {
 							console.log(address)
 							await addPair(address);
 						});
