@@ -59,7 +59,6 @@
 
 		<!-- Connect UI actions to Go functions -->
 		<script>
-			const type = "all"
 			const data = document.querySelector('.tokens');
 			const progress = document.querySelector('.prog');
 			const save = document.querySelector('.save');
@@ -67,7 +66,7 @@
 			const sel = document.getElementById('sel');
 
 			// We use async/await because Go functions are asynchronous
-			const render = async () => {
+			const render = async (type = "all") => {
 				const length = await window.getLength();
 				const completed = await window.getProgress();
 				if (completed >= 999) {
@@ -77,36 +76,39 @@
 				}
 				for (var i = 0; i < length; i++) {
 					const target = await window.getItem(i, 'target')
-					const name = await window.getItem(i, 'name')
-					const address = await window.getItem(i, 'address')
-					const price = await window.getItem(i, 'price')
-					const max = await window.getItem(i, 'max')
-					const min = await window.getItem(i, 'min')
-					const change = await window.getItem(i, 'change')
-					const period = await window.getItem(i, 'period')
-					const percent =  Math.round(100 * change / price, 2)
-					const row = document.getElementById(`token-${i}`)
 					const visible = type === "all" ? true : target === type
-					if (!row && visible) {
-						data.innerHTML += `
-							<tr id="token-${i}" class="table-dark text-dark">
-								<td>${name}</td>
-								<td>
-									<a class="address" href="https://www.dextools.io/app/ether/pair-explorer/${address}">${address}</a>
-								</td>
-								<td>${price}$</td>
-								<td>${max}$</td>
-								<td>${min}$</td>
-								<td>${change}$ / ${percent}%</td>
-								<td>${period} hours</td>
-								<td><button id="${address}" class="btn btn-primary py-0">+/-</button></td>
-							</tr>
-						`
+
+					if (visible) {
+						const name = await window.getItem(i, 'name')
+						const address = await window.getItem(i, 'address')
+						const price = await window.getItem(i, 'price')
+						const max = await window.getItem(i, 'max')
+						const min = await window.getItem(i, 'min')
+						const change = await window.getItem(i, 'change')
+						const period = await window.getItem(i, 'period')
+						const percent =  Math.round(100 * change / price, 2)
+						const row = document.getElementById(`token-${i}`)
+						if (!row) {
+							data.innerHTML += `
+								<tr id="token-${i}" class="table-dark text-dark">
+									<td>${name}</td>
+									<td>
+										<a class="address" href="https://www.dextools.io/app/ether/pair-explorer/${address}">${address}</a>
+									</td>
+									<td>${price}$</td>
+									<td>${max}$</td>
+									<td>${min}$</td>
+									<td>${change}$ / ${percent}%</td>
+									<td>${period} hours</td>
+									<td><button id="${address}" class="btn btn-primary py-0">+/-</button></td>
+								</tr>
+							`
+						}
+						const btnSync = document.getElementById(address);
+						btnSync.addEventListener('click', async () => {
+							await addPair(address);
+						});
 					}
-					const btnSync = document.getElementById(address);
-					btnSync.addEventListener('click', async () => {
-						await addPair(address);
-					});
 				}
 			};
 
@@ -117,6 +119,7 @@
 				render();
 			});
 			sel.addEventListener('change', (event) => {
+				render(event.target.value);
 				console.log(event.target.value)
 			});
 		</script>
