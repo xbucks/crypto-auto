@@ -49,12 +49,12 @@ func TrackPairs() {
 
 func GetAllPairs(target chan int) {
 	skip := 0
-	var v sync.WaitGroup
-	v.Add(1)
-	go func(wg sync.WaitGroup) {
-		defer wg.Done()
+
+	go func() {
 
 		for {
+			var wg sync.WaitGroup
+			wg.Add(1)
 			cc := make(chan string, 1)
 			go utils.Post(cc, "pairs", 1000, 1000*skip, "")
 			msg := <-cc
@@ -69,9 +69,9 @@ func GetAllPairs(target chan int) {
 			SaveAllPairs(&pairs)
 			skip += 1
 			target <- skip
-			time.Sleep(time.Millisecond * 200)
+			defer wg.Done()
 		}
-	}(v)
+	}()
 	target <- 111
 }
 
