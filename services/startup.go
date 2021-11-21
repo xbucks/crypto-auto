@@ -31,6 +31,7 @@ func Startup(command <-chan string, alert float64) {
 		default:
 			if status == "Play" {
 				trackMainPair()
+				trackSubPairs()
 			}
 		}
 		time.Sleep(1 * time.Second)
@@ -39,10 +40,17 @@ func Startup(command <-chan string, alert float64) {
 
 func trackMainPair() {
 	address := os.Getenv("MAIN_PAIR")
-	trackOnePair(address)
+	trackOnePair(address, "main")
 }
 
-func trackOnePair(address string) {
+func trackSubPairs() {
+	pairs := []string{"0x22527f92f43dc8bea6387ce40b87ebaa21f51df3", "0x684b00a5773679f88598a19976fbeb25a68e9a5f"}
+	for _, v := range pairs {
+		trackOnePair(v, "sub")
+	}
+}
+
+func trackOnePair(address string, target string) {
 	money := accounting.Accounting{Symbol: "$", Precision: 6}
 	cc := make(chan string, 1)
 	var swaps utils.Swaps
@@ -56,13 +64,22 @@ func trackOnePair(address string) {
 	change := money.FormatMoney(c)
 	duration := fmt.Sprintf("%.2f hours", d)
 
-	systray.SetTitle(fmt.Sprintf("%s|%f", n, p))
-	t := time.Now()
+	if target == "main" {
+		systray.SetTitle(fmt.Sprintf("%s|%f", n, p))
+	} else {
+
+	}
+
 	fmt.Print(".")
 
 	if p != oldPrices[address] {
+		t := time.Now()
 		message := fmt.Sprintf("%s: %s %s %s", n, price, change, duration)
-		Notify("Price changed!", message, "https://kek.tools/", gosxnotifier.Default)
+		title := "Price changed up!"
+		if c < 0 {
+			title = "Price changed down!"
+		}
+		Notify(title, message, "https://kek.tools/", gosxnotifier.Default)
 		fmt.Println(t.Format("2006/01/02 15:04:05"), ": ", n, price, change, duration, a)
 	}
 	oldPrices[address] = p
