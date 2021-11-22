@@ -17,14 +17,14 @@ var minPrices = map[string]float64{
 	"0x7a99822968410431edd1ee75dab78866e31caf39": 0.4,
 	"0x22527f92f43dc8bea6387ce40b87ebaa21f51df3": 1.0,
 	"0x684b00a5773679f88598a19976fbeb25a68e9a5f": 0.4,
-	"0xc88ac988a655b91b70def427c8778b4d43f2048d": 0.6,
+	"0xc88ac988a655b91b70def427c8778b4d43f2048d": 6.0,
 	"0xccb63225a7b19dcf66717e4d40c9a72b39331d61": 6.0,
 }
 var maxPrices = map[string]float64{
 	"0x7a99822968410431edd1ee75dab78866e31caf39": 0.6,
 	"0x22527f92f43dc8bea6387ce40b87ebaa21f51df3": 2.0,
 	"0x684b00a5773679f88598a19976fbeb25a68e9a5f": 0.6,
-	"0xc88ac988a655b91b70def427c8778b4d43f2048d": 0.75,
+	"0xc88ac988a655b91b70def427c8778b4d43f2048d": 7.5,
 	"0xccb63225a7b19dcf66717e4d40c9a72b39331d61": 10,
 }
 
@@ -99,6 +99,7 @@ func trackOnePair(address string, target string) {
 		} else {
 			sound = gosxnotifier.Morse
 		}
+
 		if p < minPrices[address] || p > maxPrices[address] {
 			sound = gosxnotifier.Basso
 		}
