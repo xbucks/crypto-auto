@@ -84,3 +84,9 @@ func (c *Tokens) SetTotal(p int) {
 	defer c.Unlock()
 	c.total = p
 }
+
+type WatchPair struct {
+	address string
+	min     float64
+	max     float64
+}
