@@ -11,6 +11,7 @@ import (
 	"sync"
 
 	"github.com/hirokimoto/crypto-auto/services"
+	"github.com/skratchdot/open-golang/open"
 	"github.com/zserge/lorca"
 )
 
@@ -30,9 +31,12 @@ func (v *Views) OpenDashboard(tks *services.Tokens) error {
 		defer ui.Close()
 
 		// Create and bind Go object to the UI
-		ui.Bind("addPair", func(t string) {
-			// os.Setenv("MAIN_PAIR", t)
-			fmt.Println(t)
+		ui.Bind("openDEX", func(t string) {
+			link := fmt.Sprintf("https://www.dextools.io/app/ether/pair-explorer/%s", t)
+			err := open.Run(link)
+			if err != nil {
+				fmt.Println(err)
+			}
 		})
 		ui.Bind("savePairs", func() {
 			services.SaveTradables(tks)

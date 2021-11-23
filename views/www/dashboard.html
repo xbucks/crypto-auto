@@ -123,21 +123,19 @@
 						data.innerHTML += `
 							<tr id="token-${i}" class="table-dark text-dark">
 								<td class="name">${name}</td>
-								<td>
-									<a class="address" target="_blank" href="https://www.dextools.io/app/ether/pair-explorer/${address}">${address}</a>
-								</td>
+								<td class="address">${address}</td>
 								<td>${price}$</td>
 								<td>${max}$</td>
 								<td>${min}$</td>
 								<td>${change}$ / ${percent}%</td>
 								<td>${period} hours</td>
-								<td><button id="${address}" class="btn btn-primary py-0">+/-</button></td>
+								<td><button id="${address}" class="btn btn-primary py-0">DEX</button></td>
 							</tr>
 						`
-						const btnAddRemove = document.getElementById(address);
-						btnAddRemove.addEventListener('click', async () => {
+						const btnOpenDEX = document.getElementById(address);
+						btnOpenDEX.addEventListener('click', async () => {
 							console.log(address);
-							await addPair(address);
+							await openDEX(address);
 						});
 					}
 				}
