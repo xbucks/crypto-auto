@@ -44,6 +44,9 @@ func SwapsByDays(target chan string, limit int, id string) {
 		var swaps Swaps
 		json.Unmarshal([]byte(msg), &swaps)
 		endIndex := len(swaps.Data.Swaps) - 1
+		if endIndex < 0 {
+			endIndex = 0
+		}
 
 		lastInt, _ := strconv.ParseInt(swaps.Data.Swaps[endIndex].Timestamp, 10, 64)
 		lastTime := time.Unix(lastInt, 0)
