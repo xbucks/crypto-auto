@@ -11,6 +11,16 @@
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 		<style>
 			html { min-height: 100%; }
+			.name {
+				max-width: 160px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.address {
+				max-width: 200px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
 		</style>
 	</head>
 	<body class="h-100 p-5" onload="start()">
@@ -42,8 +52,8 @@
 			<table class="table">
 				<thead>
 					<tr class="table-info">
-						<th>Name</th>
-						<th>Address</th>
+						<th class="name">Name</th>
+						<th class="address">Address</th>
 						<th>Price</th>
 						<th>Max</th>
 						<th>Min</th>
@@ -90,7 +100,7 @@
 						const percent =  Math.round(100 * change / price, 2)
 						data.innerHTML += `
 							<tr id="token-${i}" class="table-dark text-dark">
-								<td>${name}</td>
+								<td class="name">${name}</td>
 								<td>
 									<a class="address" target="_blank" href="https://www.dextools.io/app/ether/pair-explorer/${address}">${address}</a>
 								</td>
