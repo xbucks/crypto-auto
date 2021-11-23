@@ -5,6 +5,10 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/deckarep/gosx-notifier v0.0.0-20180201035817-e127226297fb h1:6S+TKObz6+Io2c8IOkcbK4Sz7nj6RpEVU7TkvmsZZcw=
 github.com/deckarep/gosx-notifier v0.0.0-20180201035817-e127226297fb/go.mod h1:wf3nKtOnQqCp7kp9xB7hHnNlZ6m3NoiOxjrB9hFRq4Y=
+github.com/gaillard/go-online-linear-regression v0.0.0-20141229020853-7c08c77db3ba h1:e0PAsrPngURj9ici3esfE7DEj+9XWQoOvdhPo8d7xlU=
+github.com/gaillard/go-online-linear-regression v0.0.0-20141229020853-7c08c77db3ba/go.mod h1:60GKirimCgOWQ3Ur44H6CX5O+ZmjVXE9WobOilRbpq0=
+github.com/gaillard/go-queue v0.0.0-20131212161421-6c79a0153984 h1:aFlIfyHzVVGHyHpZyPB58BvaQzAIjGFuIL+/9alExFI=
+github.com/gaillard/go-queue v0.0.0-20131212161421-6c79a0153984/go.mod h1:S5l9TjefdXy9Ikh8kl/6Tnoyii3ADQrdl6cDyvz+SI8=
 github.com/getlantern/context v0.0.0-20190109183933-c447772a6520 h1:NRUJuo3v3WGC/g5YiyF790gut6oQr5f3FBI88Wv0dx4=
 github.com/getlantern/context v0.0.0-20190109183933-c447772a6520/go.mod h1:L+mq6/vvYHKjCX2oez0CgEAJmbq1fbb/oNJIWQkBybY=
 github.com/getlantern/errors v0.0.0-20190325191628-abdb3e3e36f7 h1:6uJ+sZ/e03gkbqZ0kUG6mfKoqDb4XMAzMIwlajq19So=

@@ -13,6 +13,8 @@ require (
 require (
 	github.com/cockroachdb/apd v1.1.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/gaillard/go-online-linear-regression v0.0.0-20141229020853-7c08c77db3ba // indirect
+	github.com/gaillard/go-queue v0.0.0-20131212161421-6c79a0153984 // indirect
 	github.com/getlantern/context v0.0.0-20190109183933-c447772a6520 // indirect
 	github.com/getlantern/errors v0.0.0-20190325191628-abdb3e3e36f7 // indirect
 	github.com/getlantern/golog v0.0.0-20190830074920-4ef2e798c2d7 // indirect

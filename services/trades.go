@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"sync"
 
+	regression "github.com/gaillard/go-online-linear-regression/v1"
 	"github.com/hirokimoto/crypto-auto/utils"
 )
 
@@ -59,8 +60,11 @@ func trackPair(pair string, index int, t *Tokens, progress chan<- int) {
 
 		// Filter our some tokens which is in the active trading in recent3 days.
 		if howOld < 3*24 && price > 0.0001 {
-			var isGoingUp = checkupOfSwaps(swaps)
-			var isGoingDown = checkdownOfSwaps(swaps)
+			slope, _, _ := testRegression(swaps)
+			var isGoingUp = slope > 0
+			var isGoingDown = slope < 0
+			// var isGoingUp = checkupOfSwaps(swaps)
+			// var isGoingDown = checkdownOfSwaps(swaps)
 			var isStable = math.Abs((average-price)/price) < 0.1
 			var isUnStable = math.Abs((average-price)/price) > 0.1
 
@@ -107,4 +111,17 @@ func trackPair(pair string, index int, t *Tokens, progress chan<- int) {
 
 	defer wg.Done()
 	progress <- index
+}
+
+func testRegression(swaps utils.Swaps) (float64, float64, float64) {
+	r := regression.New(7)
+
+	for i := 0; i < len(swaps.Data.Swaps); i++ {
+		swap := swaps.Data.Swaps[i]
+		price, _ := priceOfSwap(swap)
+		r.Add(float64(i), price)
+	}
+
+	slope, intercept, stdError := r.CalculateWithStdError()
+	return slope, intercept, stdError
 }
