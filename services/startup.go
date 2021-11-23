@@ -94,8 +94,12 @@ func trackOnePair(pair WatchPair, target string) {
 			sound = gosxnotifier.Morse
 		}
 
-		if p < pair.min || p > pair.max {
-			title = fmt.Sprintf("Warning! Watch %s", n)
+		if p < pair.min {
+			title = fmt.Sprintf("Warning Low! Watch %s", n)
+			sound = gosxnotifier.Default
+		}
+		if p > pair.max {
+			title = fmt.Sprintf("Warning High! Watch %s", n)
 			sound = gosxnotifier.Default
 		}
 		Notify(title, message, link, sound)
