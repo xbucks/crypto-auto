@@ -19,6 +19,7 @@ var minPrices = map[string]float64{
 	"0x684b00a5773679f88598a19976fbeb25a68e9a5f": 0.4,
 	"0xc88ac988a655b91b70def427c8778b4d43f2048d": 6.0,
 	"0xccb63225a7b19dcf66717e4d40c9a72b39331d61": 6.0,
+	"0xc0a6bb3d31bb63033176edba7c48542d6b4e406d": 4.5,
 }
 var maxPrices = map[string]float64{
 	"0x7a99822968410431edd1ee75dab78866e31caf39": 0.6,
@@ -26,6 +27,7 @@ var maxPrices = map[string]float64{
 	"0x684b00a5773679f88598a19976fbeb25a68e9a5f": 0.6,
 	"0xc88ac988a655b91b70def427c8778b4d43f2048d": 7.5,
 	"0xccb63225a7b19dcf66717e4d40c9a72b39331d61": 10,
+	"0xc0a6bb3d31bb63033176edba7c48542d6b4e406d": 10,
 }
 
 func Startup(command <-chan string, alert float64) {
@@ -62,7 +64,8 @@ func trackSubPairs() {
 		"0x22527f92f43dc8bea6387ce40b87ebaa21f51df3",
 		"0x684b00a5773679f88598a19976fbeb25a68e9a5f",
 		"0xc88ac988a655b91b70def427c8778b4d43f2048d",
-		"0xccb63225a7b19dcf66717e4d40c9a72b39331d61"}
+		"0xccb63225a7b19dcf66717e4d40c9a72b39331d61",
+		"0xc0a6bb3d31bb63033176edba7c48542d6b4e406d"}
 	for _, v := range pairs {
 		trackOnePair(v, "sub")
 	}
@@ -95,13 +98,14 @@ func trackOnePair(address string, target string) {
 		var sound gosxnotifier.Sound
 		if target == "main" {
 			systray.SetTitle(fmt.Sprintf("%s|%f", n, p))
-			sound = gosxnotifier.Default
+			sound = gosxnotifier.Sosumi
 		} else {
 			sound = gosxnotifier.Morse
 		}
 
 		if p < minPrices[address] || p > maxPrices[address] {
-			sound = gosxnotifier.Basso
+			title = fmt.Sprintf("Warning! Watch %s", n)
+			sound = gosxnotifier.Default
 		}
 		Notify(title, message, link, sound)
 		fmt.Println(".")
