@@ -164,6 +164,8 @@ func averageOfSwaps(swaps []utils.Swap) float64 {
 func checkupOfSwaps(swaps utils.Swaps) bool {
 	avg := 0.0
 	duration := 10
+	checkUp := 0
+	checkDown := 0
 	amount := int(len(swaps.Data.Swaps) / duration)
 	for i := 0; i < duration; i++ {
 		start := i * amount
@@ -177,17 +179,20 @@ func checkupOfSwaps(swaps utils.Swaps) bool {
 		}
 		cavg := averageOfSwaps(temp)
 		if cavg > avg {
+			checkUp += 1
 			avg = cavg
 		} else {
-			return false
+			checkDown += 1
 		}
 	}
-	return true
+	return checkUp > 2*checkDown
 }
 
 func checkdownOfSwaps(swaps utils.Swaps) bool {
 	avg := 10000000.0
 	duration := 10
+	checkUp := 0
+	checkDown := 0
 	amount := int(len(swaps.Data.Swaps) / duration)
 	for i := 0; i < duration; i++ {
 		start := i * amount
@@ -200,11 +205,12 @@ func checkdownOfSwaps(swaps utils.Swaps) bool {
 			temp = append(temp, swaps.Data.Swaps[j])
 		}
 		cavg := averageOfSwaps(temp)
-		if cavg < avg {
+		if cavg > avg {
+			checkUp += 1
 			avg = cavg
 		} else {
-			return false
+			checkDown += 1
 		}
 	}
-	return true
+	return checkUp < 2*checkDown
 }
