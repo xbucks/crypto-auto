@@ -30,10 +30,15 @@
 			<div class="d-flex align-items-center mb-4 w-100">
 				<span class="text-info mr-auto prog"> </span>
 				<div class="form-group mr-3 mb-0">
-					<select class="form-control" id="sel">
+					<select class="form-control" id="target">
 						<option value="all">All</option>
 						<option value="stable">Stable</option>
 						<option value="unstable">Unstable</option>
+					</select>
+				</div>
+				<div class="form-group mr-3 mb-0">
+					<select class="form-control" id="updown">
+						<option value="all">All</option>
 						<option value="up">Trending Up</option>
 						<option value="down">Trending Down</option>
 					</select>
@@ -69,35 +74,52 @@
 
 		<!-- Connect UI actions to Go functions -->
 		<script>
+			let defaultTarget = "all";
+			let defaultUpdown = "all";
+
 			const data = document.querySelector('.tokens');
 			const progress = document.querySelector('.prog');
 			const save = document.querySelector('.save');
 			const sync = document.querySelector('.sync');
-			const sel = document.getElementById('sel');
+			const targetFilter = document.getElementById('target');
+			const updownFilter = document.getElementById('updown');
 
 			// We use async/await because Go functions are asynchronous
-			const render = async (type = "all") => {
+			const render = async (type = "all", updown = "all") => {
 				const length = await window.getLength();
 				const completed = await window.getProgress();
 				if (completed >= 999) {
-					progress.innerText = "100% Completed"
+					progress.innerText = "100% Completed";
 				} else {
-					progress.innerText = completed / 10 + "%"
+					progress.innerText = completed / 10 + "%";
 				}
-				data.innerHTML = ""
+				data.innerHTML = "";
 				for (var i = 0; i < length; i++) {
-					const target = await window.getItem(i, 'target')
-					const visible = type === "all" ? true : target === type
+					const target = await window.getItem(i, 'target');
+					const updown = await window.getItem(i, 'updown');
+
+					let visible = true;
+					if (defaultTarget === "all" && defaultUpdown === "all") {
+						visible = true;
+					} else {
+						if (defaultTarget !== "all" && defaultUpdown == "all") {
+							visible = target === defaultTarget;
+						} else if (defaultTarget === "all" && defaultUpdown !== "all") {
+							visible = updown == defaultUpdown;
+						} else if (defaultTarget !== "all" && defaultUpdown !== "all") {
+							visible = target === defaultTarget && updown === defaultUpdown;
+						}
+					}
 
 					if (visible) {
-						const name = await window.getItem(i, 'name')
-						const address = await window.getItem(i, 'address')
-						const price = await window.getItem(i, 'price')
-						const max = await window.getItem(i, 'max')
-						const min = await window.getItem(i, 'min')
-						const change = await window.getItem(i, 'change')
-						const period = await window.getItem(i, 'period')
-						const percent =  Math.round(100 * change / price, 2)
+						const name = await window.getItem(i, 'name');
+						const address = await window.getItem(i, 'address');
+						const price = await window.getItem(i, 'price');
+						const max = await window.getItem(i, 'max');
+						const min = await window.getItem(i, 'min');
+						const change = await window.getItem(i, 'change');
+						const period = await window.getItem(i, 'period');
+						const percent =  Math.round(100 * change / price, 2);
 						data.innerHTML += `
 							<tr id="token-${i}" class="table-dark text-dark">
 								<td class="name">${name}</td>
@@ -114,7 +136,7 @@
 						`
 						const btnAddRemove = document.getElementById(address);
 						btnAddRemove.addEventListener('click', async () => {
-							console.log(address)
+							console.log(address);
 							await addPair(address);
 						});
 					}
@@ -127,8 +149,13 @@
 			sync.addEventListener('click', async () => {
 				render();
 			});
-			sel.addEventListener('change', (event) => {
-				render(event.target.value);
+			targetFilter.addEventListener('change', (event) => {
+				defaultTarget = event.target.value;
+				render(defaultTarget, defaultUpdown);
+			});
+			updownFilter.addEventListener('change', (event) => {
+				defaultUpdown = event.target.value;
+				render(defaultTarget, defaultUpdown);
 			});
 		</script>
 	</body>
