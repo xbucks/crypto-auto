@@ -165,13 +165,13 @@ func checkupOfSwaps(swaps utils.Swaps) bool {
 	avg := 0.0
 	checkUp := 0
 	checkDown := 0
-	counts := len(swaps.Data.Swaps)
-	entryTime, _ := strconv.ParseInt(swaps.Data.Swaps[counts-1].Timestamp, 10, 64)
+	counts := len(swaps.Data.Swaps) - 1
+	entryTime, _ := strconv.ParseInt(swaps.Data.Swaps[counts].Timestamp, 10, 64)
 
 	var empty []utils.Swap
 	var temp []utils.Swap
 
-	for i := counts - 1; i >= 0; i-- {
+	for i := counts; i > 0; i-- {
 		createdat, _ := strconv.ParseInt(swaps.Data.Swaps[i].Timestamp, 10, 64)
 		t := time.Unix(createdat, 0).UTC()
 		createdAt := t.Round(time.Hour).UTC().Unix()
@@ -196,13 +196,13 @@ func checkdownOfSwaps(swaps utils.Swaps) bool {
 	avg := 10000000.0
 	checkUp := 0
 	checkDown := 0
-	counts := len(swaps.Data.Swaps)
-	entryTime, _ := strconv.ParseInt(swaps.Data.Swaps[counts-1].Timestamp, 10, 64)
+	counts := len(swaps.Data.Swaps) - 1
+	entryTime, _ := strconv.ParseInt(swaps.Data.Swaps[counts].Timestamp, 10, 64)
 
 	var empty []utils.Swap
 	var temp []utils.Swap
 
-	for i := counts - 1; i >= 0; i-- {
+	for i := counts; i > 0; i-- {
 		createdat, _ := strconv.ParseInt(swaps.Data.Swaps[i].Timestamp, 10, 64)
 		t := time.Unix(createdat, 0).UTC()
 		createdAt := t.Round(time.Hour).UTC().Unix()
