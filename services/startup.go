@@ -30,7 +30,7 @@ var maxPrices = map[string]float64{
 	"0xc0a6bb3d31bb63033176edba7c48542d6b4e406d": 10,
 }
 
-func Startup(command <-chan string, alert float64) {
+func Startup(command <-chan string) {
 	var status = "Play"
 	for {
 		select {

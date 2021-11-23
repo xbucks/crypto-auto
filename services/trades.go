@@ -4,12 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"math"
+	"os"
+	"strconv"
 	"sync"
 
 	"github.com/hirokimoto/crypto-auto/utils"
 )
 
-func AnalyzePairs(command <-chan string, progress chan<- int, duration int, t *Tokens) {
+func AnalyzePairs(command <-chan string, progress chan<- int, t *Tokens) {
 	pairs, _ := ReadAllPairs()
 	t.SetTotal(len(pairs))
 	var status = "Play"
@@ -27,13 +29,14 @@ func AnalyzePairs(command <-chan string, progress chan<- int, duration int, t *T
 			}
 		default:
 			if status == "Play" {
-				trackPair(pair, index, duration, t, progress)
+				trackPair(pair, index, t, progress)
 			}
 		}
 	}
 }
 
-func trackPair(pair string, index int, duration int, t *Tokens, progress chan<- int) {
+func trackPair(pair string, index int, t *Tokens, progress chan<- int) {
+	duration, _ := strconv.Atoi(os.Getenv("SWAP_DURATION"))
 	var wg sync.WaitGroup
 	wg.Add(1)
 
