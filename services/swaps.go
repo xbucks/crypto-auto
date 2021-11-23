@@ -163,54 +163,62 @@ func averageOfSwaps(swaps []utils.Swap) float64 {
 
 func checkupOfSwaps(swaps utils.Swaps) bool {
 	avg := 0.0
-	duration := 20
 	checkUp := 0
 	checkDown := 0
-	amount := int(len(swaps.Data.Swaps) / duration)
-	for i := 0; i < duration; i++ {
-		start := i * amount
-		end := (i + 1) * amount
-		if i == duration-1 {
-			end = len(swaps.Data.Swaps)
-		}
-		var temp []utils.Swap
-		for j := start; j < end; j++ {
-			temp = append(temp, swaps.Data.Swaps[j])
-		}
-		cavg := averageOfSwaps(temp)
-		if cavg > avg {
-			checkUp += 1
+	counts := len(swaps.Data.Swaps)
+	entryTime, _ := strconv.ParseInt(swaps.Data.Swaps[counts-1].Timestamp, 10, 64)
+
+	var empty []utils.Swap
+	var temp []utils.Swap
+
+	for i := counts - 1; i >= 0; i-- {
+		createdat, _ := strconv.ParseInt(swaps.Data.Swaps[i].Timestamp, 10, 64)
+		t := time.Unix(createdat, 0).UTC()
+		createdAt := t.Round(time.Hour).UTC().Unix()
+		if entryTime != createdAt {
+			cavg := averageOfSwaps(temp)
+			if cavg > avg {
+				checkUp += 1
+			} else {
+				checkDown += 1
+			}
 			avg = cavg
-		} else {
-			checkDown += 1
+			entryTime = createdAt
+			temp = empty
 		}
+		temp = append(temp, swaps.Data.Swaps[i])
 	}
+
 	return checkUp > 2*checkDown
 }
 
 func checkdownOfSwaps(swaps utils.Swaps) bool {
 	avg := 10000000.0
-	duration := 20
 	checkUp := 0
 	checkDown := 0
-	amount := int(len(swaps.Data.Swaps) / duration)
-	for i := 0; i < duration; i++ {
-		start := i * amount
-		end := (i + 1) * amount
-		if i == duration-1 {
-			end = len(swaps.Data.Swaps)
-		}
-		var temp []utils.Swap
-		for j := start; j < end; j++ {
-			temp = append(temp, swaps.Data.Swaps[j])
-		}
-		cavg := averageOfSwaps(temp)
-		if cavg > avg {
-			checkUp += 1
+	counts := len(swaps.Data.Swaps)
+	entryTime, _ := strconv.ParseInt(swaps.Data.Swaps[counts-1].Timestamp, 10, 64)
+
+	var empty []utils.Swap
+	var temp []utils.Swap
+
+	for i := counts - 1; i >= 0; i-- {
+		createdat, _ := strconv.ParseInt(swaps.Data.Swaps[i].Timestamp, 10, 64)
+		t := time.Unix(createdat, 0).UTC()
+		createdAt := t.Round(time.Hour).UTC().Unix()
+		if entryTime != createdAt {
+			cavg := averageOfSwaps(temp)
+			if cavg > avg {
+				checkUp += 1
+			} else {
+				checkDown += 1
+			}
 			avg = cavg
-		} else {
-			checkDown += 1
+			entryTime = createdAt
+			temp = empty
 		}
+		temp = append(temp, swaps.Data.Swaps[i])
 	}
+
 	return checkUp < 2*checkDown
 }
