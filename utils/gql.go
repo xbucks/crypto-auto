@@ -44,6 +44,8 @@ func SwapsByDays(target chan string, limit int, id string) {
 		var swaps Swaps
 		json.Unmarshal([]byte(msg), &swaps)
 		if len(swaps.Data.Swaps) == 0 {
+			tg, _ := json.Marshal(results)
+			target <- string(tg)
 			return
 		}
 		endIndex := len(swaps.Data.Swaps) - 1
