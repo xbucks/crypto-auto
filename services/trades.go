@@ -54,54 +54,49 @@ func trackPair(pair string, index int, duration int, t *Tokens, progress chan<- 
 		min, max, _, _, _, _ := minMax(swaps)
 		howOld := howMuchOld(swaps)
 
-		inPeriodStable := true
-		inPeriodUnStable := true
-		if duration > 100 {
-			inPeriodStable = period > 24 && howOld < 24
-			inPeriodUnStable = period < 3*24 && howOld < 24
-		} else {
-			inPeriodStable = true
-			inPeriodUnStable = true
-		}
+		// Filter our some tokens which is in the active trading in recent3 days.
+		if howOld < 3*24 && price > 0.0001 {
+			var isGoingUp = checkupOfSwaps(swaps)
+			var isGoingDown = checkdownOfSwaps(swaps)
+			var isStable = math.Abs((average-price)/price) < 0.1
+			var isUnStable = math.Abs((average-price)/price) > 0.1
 
-		var isGoingUp = checkupOfSwaps(swaps)
-		var isGoingDown = checkdownOfSwaps(swaps)
-		var isStable = math.Abs((average-price)/price) < 0.1 && inPeriodStable
-		var isUnStable = math.Abs((average-price)/price) > 0.1 && inPeriodUnStable && price > 0.0001
-
-		target := ""
-		if isUnStable {
-			target = "unstable"
-			// Notify("Unstable token!", fmt.Sprintf("%s %f %f", name, price, change), "https://kek.tools/", gosxnotifier.Blow)
-			fmt.Println("Unstable token ", name, price, average, change, period)
-		}
-		if isStable {
-			target = "stable"
-			// Notify("Stable token!", fmt.Sprintf("%s %f %f", name, price, change), "https://kek.tools/", gosxnotifier.Blow)
-			fmt.Println("Stable token ", name, price, average, change, period)
-		}
-		if isGoingUp {
-			target = "up"
-			fmt.Println("Trending up token ", name, price, average, change, period)
-		}
-		if isGoingDown {
-			target = "down"
-			fmt.Println("Trending down token ", name, price, average, change, period)
-		}
-
-		if isUnStable || isStable || isGoingUp || isGoingDown {
-			ct := &Token{
-				target:  target,
-				name:    name,
-				address: pair,
-				price:   fmt.Sprintf("%f", price),
-				change:  fmt.Sprintf("%f", change),
-				min:     fmt.Sprintf("%f", min),
-				max:     fmt.Sprintf("%f", max),
-				period:  fmt.Sprintf("%.2f", period),
-				swaps:   swaps.Data.Swaps,
+			target := ""
+			updown := ""
+			if isUnStable {
+				target = "unstable"
+				// Notify("Unstable token!", fmt.Sprintf("%s %f %f", name, price, change), "https://kek.tools/", gosxnotifier.Blow)
+				fmt.Println("Unstable token ", name, price, average, change, period)
 			}
-			t.Add(ct)
+			if isStable {
+				target = "stable"
+				// Notify("Stable token!", fmt.Sprintf("%s %f %f", name, price, change), "https://kek.tools/", gosxnotifier.Blow)
+				fmt.Println("Stable token ", name, price, average, change, period)
+			}
+			if isGoingUp {
+				updown = "up"
+				fmt.Println("Trending up token ", name, price, average, change, period)
+			}
+			if isGoingDown {
+				updown = "down"
+				fmt.Println("Trending down token ", name, price, average, change, period)
+			}
+
+			if isUnStable || isStable || isGoingUp || isGoingDown {
+				ct := &Token{
+					target:  target,
+					updown:  updown,
+					name:    name,
+					address: pair,
+					price:   fmt.Sprintf("%f", price),
+					change:  fmt.Sprintf("%f", change),
+					min:     fmt.Sprintf("%f", min),
+					max:     fmt.Sprintf("%f", max),
+					period:  fmt.Sprintf("%.2f", period),
+					swaps:   swaps.Data.Swaps,
+				}
+				t.Add(ct)
+			}
 		}
 	}
 	t.SetProgress(index)

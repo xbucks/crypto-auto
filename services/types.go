@@ -9,7 +9,8 @@ import (
 
 type Token struct {
 	sync.Mutex
-	target  string // unstable, stable, up, down
+	target  string // stable, unstable
+	updown  string // up, down
 	name    string
 	address string
 	price   string

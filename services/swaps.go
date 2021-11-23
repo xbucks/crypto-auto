@@ -163,7 +163,7 @@ func averageOfSwaps(swaps []utils.Swap) float64 {
 
 func checkupOfSwaps(swaps utils.Swaps) bool {
 	avg := 0.0
-	duration := 10
+	duration := 20
 	checkUp := 0
 	checkDown := 0
 	amount := int(len(swaps.Data.Swaps) / duration)
@@ -190,7 +190,7 @@ func checkupOfSwaps(swaps utils.Swaps) bool {
 
 func checkdownOfSwaps(swaps utils.Swaps) bool {
 	avg := 10000000.0
-	duration := 10
+	duration := 20
 	checkUp := 0
 	checkDown := 0
 	amount := int(len(swaps.Data.Swaps) / duration)
