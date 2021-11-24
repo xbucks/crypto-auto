@@ -18,7 +18,7 @@ var PAIRS = []WatchPair{
 	{"0xc88ac988a655b91b70def427c8778b4d43f2048d", 6.5, 8.0},   // DERC
 	{"0xccb63225a7b19dcf66717e4d40c9a72b39331d61", 8.0, 9.0},   // MC
 	{"0xc0a6bb3d31bb63033176edba7c48542d6b4e406d", 6.0, 8.0},   // RNDR
-	{"0x3dd49f67e9d5bc4c5e6634b3f70bfd9dc1b6bd74", 4.5, 6.0},   // SAND
+	{"0x3dd49f67e9d5bc4c5e6634b3f70bfd9dc1b6bd74", 4.5, 6.5},   // SAND
 	{"0x11b1f53204d03e5529f09eb3091939e4fd8c9cf3", 3.5, 4.5},   // MANA
 	{"0xc8ca3c0f011fe42c48258ecbbf5d94c51f141c17", 2.0, 3.0},   // CGG
 	{"0x4d3138931437dcc356ca511ac812e14ba8199fd6", 0.15, 0.25}, // BONDLY
