@@ -98,7 +98,7 @@ func Query(target string, limit int, skip int, id string) map[string]string {
 	case "swaps":
 		sub := fmt.Sprintf(`
 			query swaps {
-				swaps(first: %d, orderBy: timestamp, orderDirection: desc, where:
+				swaps(first: %d, skip: %d, orderBy: timestamp, orderDirection: desc, where:
 					{ pair: "%s" }
 				) {
 					pair {
@@ -123,7 +123,7 @@ func Query(target string, limit int, skip int, id string) map[string]string {
 					id
 				}
 			}
-		`, limit, id)
+		`, limit, skip, id)
 		query = map[string]string{"query": sub}
 	case "pairs":
 		sub := fmt.Sprintf(`
