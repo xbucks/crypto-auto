@@ -12,17 +12,15 @@ import (
 )
 
 var PAIRS = []WatchPair{
-	{"0x3dd49f67e9d5bc4c5e6634b3f70bfd9dc1b6bd74", 7.5, 9.0},   // SAND
-	{"0x7a99822968410431edd1ee75dab78866e31caf39", 0.4, 0.5},   // XI
-	{"0x22527f92f43dc8bea6387ce40b87ebaa21f51df3", 1.3, 2.0},   // NUM
-	{"0x684b00a5773679f88598a19976fbeb25a68e9a5f", 0.4, 0.5},   // eXRD
-	{"0xc88ac988a655b91b70def427c8778b4d43f2048d", 6.5, 8.0},   // DERC
+	{"0x7a99822968410431edd1ee75dab78866e31caf39", 0.42, 0.5},  // XI
+	{"0x3dd49f67e9d5bc4c5e6634b3f70bfd9dc1b6bd74", 8.0, 8.5},   // SAND
+	{"0x22527f92f43dc8bea6387ce40b87ebaa21f51df3", 1.5, 1.8},   // NUM
+	{"0xc88ac988a655b91b70def427c8778b4d43f2048d", 6.7, 8.0},   // DERC
 	{"0xccb63225a7b19dcf66717e4d40c9a72b39331d61", 8.0, 10.0},  // MC
 	{"0xc0a6bb3d31bb63033176edba7c48542d6b4e406d", 6.0, 8.0},   // RNDR
 	{"0x11b1f53204d03e5529f09eb3091939e4fd8c9cf3", 3.5, 6.0},   // MANA
-	{"0xc8ca3c0f011fe42c48258ecbbf5d94c51f141c17", 2.0, 3.0},   // CGG
-	{"0x4d3138931437dcc356ca511ac812e14ba8199fd6", 0.15, 0.25}, // BONDLY
-	{"0xc34da1ab0f93dfed30729951dafcfb9ce3e2a9ae", 1.5, 2.5},   // XTM
+	{"0xc8ca3c0f011fe42c48258ecbbf5d94c51f141c17", 2.0, 2.5},   // CGG
+	{"0x4d3138931437dcc356ca511ac812e14ba8199fd6", 0.18, 0.22}, // BONDLY
 }
 var oldPrices = map[string]float64{}
 
